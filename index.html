@@ -1,1 +1,78 @@
-<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>jmg</title><style>body{font-family:system-ui,sans-serif;background:#0e1726;color:#e8edf7;display:grid;place-items:center;height:100vh;margin:0}a{color:#38bdf8}</style></head><body><div><h1>jmg</h1><p><a href="/viajes/">✈️ Viajes — planeador de destinos</a></p></div></body></html>
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Viajes — descubrí destinos según el clima</title>
+  <meta name="description" content="Decinos cuándo querés viajar y qué te gusta: te recomendamos destinos con el mejor clima. Creás el viaje en un click. Gratis, sin cuentas, todo en tu navegador." />
+  <style>
+    :root{
+      --bg:#0e1726; --surface:#172238; --surface2:#1f2c46; --border:#2c3a58;
+      --text:#e8edf7; --muted:#94a3b8; --accent:#38bdf8; --accent2:#0ea5e9; --gold:#fbbf24;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+      background:radial-gradient(1200px 600px at 50% -10%, #15233f 0%, var(--bg) 60%);
+      color:var(--text); min-height:100vh; line-height:1.55;
+    }
+    .wrap{max-width:780px; margin:0 auto; padding:64px 20px 80px; text-align:center}
+    .badge{
+      display:inline-block; font-size:13px; color:var(--muted);
+      border:1px solid var(--border); border-radius:999px; padding:5px 14px; margin-bottom:28px;
+    }
+    h1{font-size:clamp(40px,9vw,68px); margin:0 0 8px; letter-spacing:-1px}
+    .tag{font-size:clamp(17px,3.5vw,22px); color:var(--muted); margin:0 auto 36px; max-width:560px}
+    .cta{
+      display:inline-block; text-decoration:none; font-weight:800; font-size:18px;
+      color:#fff; background:linear-gradient(180deg,var(--accent) 0%,var(--accent2) 100%);
+      padding:16px 34px; border-radius:14px; box-shadow:0 10px 30px rgba(14,165,233,.35);
+      transition:transform .15s, box-shadow .15s;
+    }
+    .cta:hover{transform:translateY(-2px); box-shadow:0 14px 38px rgba(14,165,233,.5)}
+    .sub{margin-top:14px; font-size:13px; color:var(--muted)}
+    .features{
+      display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px;
+      margin:56px 0 0; text-align:left;
+    }
+    .card{
+      background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:20px;
+    }
+    .card .emoji{font-size:26px}
+    .card h3{margin:10px 0 6px; font-size:16px}
+    .card p{margin:0; color:var(--muted); font-size:14px}
+    .how{margin-top:56px; text-align:left; background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:8px 24px}
+    .how li{margin:16px 0; color:var(--muted)}
+    .how b{color:var(--text)}
+    footer{margin-top:56px; color:var(--muted); font-size:13px}
+    footer a{color:var(--accent); text-decoration:none}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <span class="badge">✈️ 500 destinos · 100% en tu navegador · gratis</span>
+    <h1>Viajes</h1>
+    <p class="tag">¿A dónde voy este mes? Decinos cuándo querés viajar y qué te gusta, y te recomendamos los destinos con el <b style="color:var(--text)">mejor clima</b>.</p>
+    <a class="cta" href="/viajes/">Abrir la app →</a>
+    <div class="sub">Sin cuentas · sin servidor · sin tracking</div>
+
+    <section class="features">
+      <div class="card"><div class="emoji">🌎</div><h3>Descubrí por clima</h3><p>Filtrá por temperatura, lluvia, playa o montaña, presupuesto y horas de vuelo. Te dice si el mes es ideal, bueno o para evitar.</p></div>
+      <div class="card"><div class="emoji">✨</div><h3>Creá el viaje en un click</h3><p>Elegís el destino en el buscador y el viaje se arma solo, con fechas según el mes elegido. Nada de formularios aburridos.</p></div>
+      <div class="card"><div class="emoji">💰</div><h3>Gastos del grupo</h3><p>Quién pagó qué, dividido entre todos, con balances automáticos y multimoneda.</p></div>
+      <div class="card"><div class="emoji">🌕</div><h3>Mareas y luna</h3><p>Para destinos costeros calcula fases lunares y ventanas de marea baja.</p></div>
+    </section>
+
+    <ol class="how">
+      <li><b>1.</b> Entrás a <b>Descubrir</b> y movés los sliders (cuándo, qué clima te gusta).</li>
+      <li><b>2.</b> Tocás <b>+ Crear viaje</b> en el destino que te gustó.</li>
+      <li><b>3.</b> Armás el itinerario, cargás gastos y exportás al calendario.</li>
+    </ol>
+
+    <footer>
+      Hecho con ☕ por <a href="https://github.com/jmg">jmg</a> ·
+      <a href="/viajes/">Probar Viajes</a>
+    </footer>
+  </main>
+</body>
+</html>
