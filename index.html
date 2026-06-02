@@ -59,7 +59,8 @@
   @keyframes sweep{0%{left:-120%}55%,100%{left:160%}}
   .sub{margin-top:16px; font-size:13px; color:var(--muted)}
 
-  .features{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:16px; margin:64px 0 0; text-align:left}
+  .features{display:grid; grid-template-columns:repeat(2,1fr); gap:16px; margin:64px 0 0; text-align:left}
+  @media (max-width:560px){ .features{grid-template-columns:1fr} }
   .card{background:rgba(23,34,56,.6); border:1px solid var(--border); border-radius:16px; padding:22px;
     backdrop-filter:blur(8px); transition:transform .2s, border-color .2s, box-shadow .2s}
   .card:hover{transform:translateY(-6px); border-color:var(--accent); box-shadow:0 16px 40px rgba(0,0,0,.35)}
