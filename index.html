@@ -14,8 +14,12 @@
 
   /* ===== Fondo cinemático (escenas generadas desde THEMES) ===== */
   .scenes{position:fixed;inset:0;z-index:0;overflow:hidden}
-  .scene{position:absolute;inset:0;opacity:0}              /* animación 'show' la asigna el JS */
-  .scene .silh{position:absolute;left:0;right:0;bottom:0;width:100%;height:48vh;display:block}
+  .scene{position:absolute;inset:0;opacity:0}                 /* animación 'show' la asigna el JS */
+  .ground{position:absolute;left:0;right:0;bottom:0;height:42vh;
+    background:linear-gradient(180deg,transparent,rgba(0,0,0,.28))}
+  .art{position:absolute;left:50%;transform:translateX(-50%);bottom:2vh;white-space:nowrap;
+    font-size:clamp(46px,12vw,120px);letter-spacing:.06em;line-height:1;
+    filter:drop-shadow(0 10px 18px rgba(0,0,0,.45));user-select:none}
   .orb{position:absolute;border-radius:50%;filter:blur(2px)}
   .stars{position:absolute;inset:0;background-image:
     radial-gradient(1.5px 1.5px at 20% 18%,#fff,transparent),radial-gradient(1.5px 1.5px at 70% 26%,#cfe3ff,transparent),
@@ -25,7 +29,7 @@
   @keyframes fall{0%{transform:translateY(-12px) translateX(0)}100%{transform:translateY(110vh) translateX(28px)}}
 
   .veil{position:fixed;inset:0;z-index:1;pointer-events:none;
-    background:radial-gradient(120% 80% at 50% 0%,rgba(6,12,26,.25),rgba(6,12,26,.7) 75%)}
+    background:radial-gradient(120% 75% at 50% 0%,rgba(6,12,26,.18),rgba(6,12,26,.66) 78%)}
 
   /* ===== Contenido ===== */
   .wrap{position:relative;z-index:2;max-width:820px;margin:0 auto;padding:70px 20px 90px;text-align:center}
@@ -33,11 +37,10 @@
   @keyframes fly{0%,100%{transform:translateY(0) rotate(-8deg)}50%{transform:translateY(-14px) rotate(-2deg)}}
   .badge{display:inline-block;font-size:13px;border:1px solid var(--border);border-radius:999px;padding:6px 16px;
     margin:14px 0 24px;background:rgba(10,17,32,.4);backdrop-filter:blur(6px)}
-  h1{font-size:clamp(48px,11vw,92px);margin:0 0 10px;letter-spacing:-2px;font-weight:800;text-shadow:0 4px 30px rgba(0,0,0,.5)}
-  .tag{font-size:clamp(18px,3.6vw,24px);margin:0 auto 14px;max-width:620px;text-shadow:0 2px 14px rgba(0,0,0,.5)}
+  h1{font-size:clamp(48px,11vw,92px);margin:0 0 10px;letter-spacing:-2px;font-weight:800;text-shadow:0 4px 30px rgba(0,0,0,.55)}
+  .tag{font-size:clamp(18px,3.6vw,24px);margin:0 auto 14px;max-width:620px;text-shadow:0 2px 14px rgba(0,0,0,.55)}
   .rot{position:relative;display:inline-block;min-width:7ch;text-align:left;font-weight:800}
-  .rot span{position:absolute;left:0;opacity:0;white-space:nowrap}  /* animación 'word' la asigna el JS */
-
+  .rot span{position:absolute;left:0;opacity:0;white-space:nowrap}   /* animación 'word' la asigna el JS */
   .cta{position:relative;display:inline-block;margin-top:22px;text-decoration:none;font-weight:800;font-size:19px;
     color:#04121f;background:linear-gradient(180deg,#7dd3fc,#38bdf8);padding:17px 40px;border-radius:16px;
     box-shadow:0 14px 40px rgba(56,189,248,.5);transition:transform .15s,box-shadow .15s;overflow:hidden}
@@ -46,7 +49,6 @@
     background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent);transform:skewX(-20deg);animation:sweep 3.2s ease-in-out infinite}
   @keyframes sweep{0%{left:-120%}55%,100%{left:160%}}
   .sub{margin-top:14px;font-size:13px;color:var(--muted)}
-
   .features{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin:70px 0 0;text-align:left}
   @media (max-width:560px){.features{grid-template-columns:1fr}}
   .card{background:rgba(12,20,38,.55);border:1px solid var(--border);border-radius:16px;padding:22px;backdrop-filter:blur(10px);
@@ -69,7 +71,6 @@
 <body>
   <div class="scenes" aria-hidden="true"></div>
   <div class="veil"></div>
-
   <main class="wrap">
     <div class="plane reveal d1">✈️</div>
     <div><span class="badge reveal d2">620 destinos · 100% en tu navegador · gratis</span></div>
@@ -96,108 +97,62 @@
 
   <script>
   /* =======================================================================
-     THEMES — agregar un theme es sumar un objeto a este array. El resto
-     (escena, palabra rotativa y los tiempos de transición) se genera solo.
-     Campos:
-       id, word, wordColor   -> palabra que rota en el título
-       sky                   -> fondo del cielo (cualquier CSS background)
-       orb                   -> sol/luna: {size, pos:{top|bottom,left|right}, core, glow}
-       stars                 -> opacidad de estrellas (0 = sin estrellas)
-       snow                  -> true para copos cayendo
-       silhouette            -> SVG (viewBox 0 0 1440 320) de la silueta inferior
+     THEMES — agregar un theme es sumar un objeto. Escena, palabra y tiempos
+     se generan solos. 'art' es el dibujo de la escena (emoji, pesa nada).
+       id, word, wordColor | sky (CSS) | orb{size,pos,core,glow} | stars | snow | art
   ======================================================================= */
   const THEMES = [
-    {
-      id:'trop', word:'playa', wordColor:'#ffd08a',
+    { id:'trop', word:'playa', wordColor:'#ffd08a',
       sky:'linear-gradient(180deg,#0b2a4a 0%,#1c5e86 35%,#f59e6b 78%,#fcd9a8 100%)',
-      orb:{size:120,pos:{bottom:'34vh',right:'18%'},core:'#fff3c4,#ffb24d',glow:'90px 30px rgba(255,178,77,.6)'},
-      stars:0, snow:false,
-      silhouette:`<path fill="#06283d" d="M0,230 Q360,180 720,220 T1440,210 L1440,320 L0,320 Z"/>
-        <g fill="#04202f"><rect x="180" y="150" width="10" height="120"/><path d="M185,150 q-60,-20 -70,10 q50,-30 70,0 q-10,-55 35,-50 q-30,15 -35,40 q40,-25 70,-5 q-55,-25 -70,5 z"/>
-        <rect x="1180" y="135" width="12" height="140"/><path d="M1186,135 q-70,-22 -82,12 q58,-34 82,0 q-12,-62 40,-58 q-35,18 -40,46 q46,-28 80,-6 q-62,-28 -80,6 z"/></g>`
-    },
-    {
-      id:'city', word:'ciudad', wordColor:'#bcd0ff',
+      orb:{size:120,pos:{bottom:'40vh',right:'18%'},core:'#fff3c4,#ffb24d',glow:'90px 30px rgba(255,178,77,.6)'},
+      stars:0, snow:false, art:'🌴 🏖️ 🍹 🌴 🐚 🌴' },
+    { id:'city', word:'ciudad', wordColor:'#bcd0ff',
       sky:'linear-gradient(180deg,#0a0f2c 0%,#1a1b4b 45%,#3b2a63 80%,#6d3b73 100%)',
       orb:{size:80,pos:{top:'14vh',left:'16%'},core:'#fdfcf0,#dfe6ff',glow:'60px 18px rgba(223,230,255,.5)'},
-      stars:.7, snow:false,
-      silhouette:`<g fill="#0a0f24"><rect x="40" y="160" width="90" height="160"/><rect x="150" y="110" width="70" height="210"/><rect x="240" y="180" width="80" height="140"/><rect x="340" y="90" width="60" height="230"/><rect x="420" y="150" width="100" height="170"/><rect x="540" y="60" width="64" height="260"/><rect x="620" y="140" width="90" height="180"/><rect x="730" y="100" width="76" height="220"/><rect x="826" y="170" width="96" height="150"/><rect x="940" y="80" width="66" height="240"/><rect x="1020" y="150" width="92" height="170"/><rect x="1130" y="120" width="72" height="200"/><rect x="1220" y="175" width="100" height="145"/><rect x="1330" y="110" width="80" height="210"/></g>
-        <g fill="#ffd56b" opacity=".85"><rect x="60" y="180" width="8" height="10"/><rect x="84" y="200" width="8" height="10"/><rect x="168" y="130" width="7" height="9"/><rect x="360" y="110" width="7" height="9"/><rect x="558" y="84" width="7" height="9"/><rect x="750" y="124" width="7" height="9"/><rect x="958" y="104" width="7" height="9"/><rect x="1044" y="172" width="7" height="9"/><rect x="1148" y="146" width="7" height="9"/><rect x="1350" y="134" width="7" height="9"/></g>`
-    },
-    {
-      id:'snow', word:'nieve', wordColor:'#dff1ff',
+      stars:.7, snow:false, art:'🏙️ 🏢 🌃 🏬 🏙️ 🏢' },
+    { id:'snow', word:'nieve', wordColor:'#dff1ff',
       sky:'linear-gradient(180deg,#0e2236 0%,#27537a 40%,#9cc3e0 80%,#e8f3ff 100%)',
       orb:{size:90,pos:{top:'16vh',right:'22%'},core:'#ffffff,#cfe3ff',glow:'70px 22px rgba(207,227,255,.5)'},
-      stars:.4, snow:true,
-      silhouette:`<path fill="#274b6d" d="M0,320 L0,150 L260,300 L520,140 L820,300 L1080,120 L1440,300 L1440,320 Z"/>
-        <path fill="#dcecff" d="M520,140 L480,180 L560,180 Z M1080,120 L1040,165 L1120,165 Z M260,300 L235,265 L285,265 Z"/>
-        <path fill="#bcd4ee" d="M0,320 L0,230 L360,300 L760,210 L1140,300 L1440,235 L1440,320 Z"/>`
-    },
-    {
-      id:'desert', word:'desierto', wordColor:'#ffcf8f',
+      stars:.4, snow:true, art:'🏔️ 🌲 ⛄ 🎿 🏔️ 🌲' },
+    { id:'desert', word:'desierto', wordColor:'#ffcf8f',
       sky:'linear-gradient(180deg,#2a1a3a 0%,#a3506b 38%,#e98b53 72%,#f6c878 100%)',
-      orb:{size:140,pos:{bottom:'30vh',left:'20%'},core:'#fff0c0,#ff9d4d',glow:'100px 34px rgba(255,157,77,.55)'},
-      stars:0, snow:false,
-      silhouette:`<path fill="#7a3b3f" d="M0,260 Q300,200 640,250 T1440,240 L1440,320 L0,320 Z"/>
-        <path fill="#9c4f48" d="M0,300 Q360,250 760,290 T1440,285 L1440,320 L0,320 Z"/>
-        <g fill="#5c2d34"><rect x="300" y="210" width="8" height="60"/><path d="M304,210 q-30,-8 -34,8 q26,-16 34,0 q-6,-26 18,-26 q-16,8 -18,20 q22,-12 36,-2 q-28,-12 -36,2 z"/></g>`
-    },
-    {
-      id:'jungle', word:'selva', wordColor:'#bdf0b0',
+      orb:{size:140,pos:{bottom:'36vh',left:'20%'},core:'#fff0c0,#ff9d4d',glow:'100px 34px rgba(255,157,77,.55)'},
+      stars:0, snow:false, art:'🏜️ 🐫 🌵 🏜️ 🌵' },
+    { id:'jungle', word:'selva', wordColor:'#bdf0b0',
       sky:'linear-gradient(180deg,#06241f 0%,#0e5a3f 45%,#3f9d57 82%,#cdeaa0 100%)',
       orb:{size:100,pos:{top:'18vh',left:'24%'},core:'#fbffd8,#f2e07a',glow:'70px 22px rgba(242,224,122,.45)'},
-      stars:0, snow:false,
-      silhouette:`<path fill="#04241a" d="M0,250 Q240,200 480,245 T960,245 T1440,250 L1440,320 L0,320 Z"/>
-        <g fill="#063626"><path d="M120,250 q-40,-90 -10,-150 q-30,70 10,150 z"/><path d="M120,200 q70,-30 110,-10 q-60,-5 -110,30 z"/><path d="M120,210 q-70,-22 -110,4 q60,-6 110,16 z"/>
-        <path d="M1280,250 q-46,-100 -12,-165 q-32,78 12,165 z"/><path d="M1280,196 q78,-34 122,-12 q-66,-6 -122,34 z"/></g>`
-    }
+      stars:0, snow:false, art:'🌴 🌿 🦜 🐒 🌴 🌺 🌴' },
   ];
 
-  const SLOT = 9;                       // segundos por theme
+  const SLOT = 9;
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const N = THEMES.length, T = N * SLOT, seg = 100 / N;
 
-  // Keyframes dinámicos: cada escena/ palabra es visible ~1 slot, con crossfade.
   const kf = document.createElement('style');
   kf.textContent =
     `@keyframes show{0%{opacity:0}2%{opacity:1}${(seg-2).toFixed(2)}%{opacity:1}${seg.toFixed(2)}%{opacity:0}100%{opacity:0}}`+
     `@keyframes word{0%{opacity:0;transform:translateY(10px)}2%{opacity:1;transform:none}${(seg-2).toFixed(2)}%{opacity:1}${seg.toFixed(2)}%{opacity:0;transform:translateY(-10px)}100%{opacity:0}}`;
   document.head.appendChild(kf);
 
-  const scenes = document.querySelector('.scenes');
-  const rot = document.getElementById('rot');
-
+  const scenes = document.querySelector('.scenes'), rot = document.getElementById('rot');
   THEMES.forEach((t, i) => {
     const delay = (-i * SLOT) + 's';
-    // Escena
     const sc = document.createElement('div');
-    sc.className = 'scene';
-    sc.style.background = t.sky;
+    sc.className = 'scene'; sc.style.background = t.sky;
     if (!reduce) { sc.style.animation = `show ${T}s linear infinite`; sc.style.animationDelay = delay; }
     else if (i === 0) sc.style.opacity = 1;
-
     if (t.stars) { const s=document.createElement('div'); s.className='stars'; s.style.opacity=t.stars; sc.appendChild(s); }
-    if (t.orb) {
-      const o=document.createElement('div'); o.className='orb';
-      o.style.width=o.style.height=t.orb.size+'px';
-      Object.assign(o.style, t.orb.pos);
-      o.style.background=`radial-gradient(circle,${t.orb.core})`;
-      o.style.boxShadow=`0 0 ${t.orb.glow}`;
-      sc.appendChild(o);
-    }
-    if (t.snow && !reduce) {
-      const f=document.createElement('div'); f.className='flakes';
+    if (t.orb) { const o=document.createElement('div'); o.className='orb';
+      o.style.width=o.style.height=t.orb.size+'px'; Object.assign(o.style,t.orb.pos);
+      o.style.background=`radial-gradient(circle,${t.orb.core})`; o.style.boxShadow=`0 0 ${t.orb.glow}`; sc.appendChild(o); }
+    if (t.snow && !reduce) { const f=document.createElement('div'); f.className='flakes';
       for (let k=0;k<40;k++){ const fl=document.createElement('i'); fl.textContent='❄';
         fl.style.left=Math.random()*100+'vw'; fl.style.fontSize=(8+Math.random()*14)+'px';
         fl.style.animationDuration=(6+Math.random()*8)+'s'; fl.style.animationDelay=(-Math.random()*10)+'s';
-        fl.style.opacity=(.4+Math.random()*.6); f.appendChild(fl); }
-      sc.appendChild(f);
-    }
-    sc.insertAdjacentHTML('beforeend',
-      `<svg class="silh" viewBox="0 0 1440 320" preserveAspectRatio="none">${t.silhouette}</svg>`);
+        fl.style.opacity=(.4+Math.random()*.6); f.appendChild(fl); } sc.appendChild(f); }
+    sc.insertAdjacentHTML('beforeend', `<div class="ground"></div><div class="art">${t.art}</div>`);
     scenes.appendChild(sc);
 
-    // Palabra rotativa
     const w=document.createElement('span'); w.textContent=t.word; w.style.color=t.wordColor;
     if (!reduce) { w.style.animation=`word ${T}s linear infinite`; w.style.animationDelay=delay; }
     else if (i===0) w.style.opacity=1;
