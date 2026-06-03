@@ -6,54 +6,24 @@
 <title>Viajes — descubrí destinos según el clima</title>
 <meta name="description" content="Decinos cuándo querés viajar y qué te gusta: te recomendamos destinos con el mejor clima. Creás el viaje en un click. Gratis, sin cuentas, todo en tu navegador." />
 <style>
-  :root{
-    --text:#eef4ff; --muted:#c4d2e8; --border:rgba(255,255,255,.18);
-    --accent:#38bdf8; --accent2:#0ea5e9;
-  }
+  :root{--text:#eef4ff;--muted:#c4d2e8;--border:rgba(255,255,255,.18);--accent:#38bdf8}
   *{box-sizing:border-box}
   html{scroll-behavior:smooth}
   body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--text);
     min-height:100vh;line-height:1.55;overflow-x:hidden;background:#0a1120}
 
-  /* ===== Fondo cinemático: escenas que transicionan ===== */
+  /* ===== Fondo cinemático (escenas generadas desde THEMES) ===== */
   .scenes{position:fixed;inset:0;z-index:0;overflow:hidden}
-  .scene{position:absolute;inset:0;opacity:0;animation:show 36s linear infinite}
+  .scene{position:absolute;inset:0;opacity:0}              /* animación 'show' la asigna el JS */
   .scene .silh{position:absolute;left:0;right:0;bottom:0;width:100%;height:48vh;display:block}
   .orb{position:absolute;border-radius:50%;filter:blur(2px)}
-  /* tiempos: 4 escenas, cada una visible ~9s con crossfade */
-  .s1{animation-delay:0s}.s2{animation-delay:-9s}.s3{animation-delay:-18s}.s4{animation-delay:-27s}
-  @keyframes show{0%{opacity:0}6%{opacity:1}25%{opacity:1}31%{opacity:0}100%{opacity:0}}
+  .stars{position:absolute;inset:0;background-image:
+    radial-gradient(1.5px 1.5px at 20% 18%,#fff,transparent),radial-gradient(1.5px 1.5px at 70% 26%,#cfe3ff,transparent),
+    radial-gradient(1px 1px at 45% 12%,#fff,transparent),radial-gradient(1px 1px at 85% 20%,#fff,transparent),
+    radial-gradient(1.5px 1.5px at 33% 30%,#fff,transparent)}
+  .flakes i{position:absolute;top:-12px;color:#fff;animation:fall linear infinite}
+  @keyframes fall{0%{transform:translateY(-12px) translateX(0)}100%{transform:translateY(110vh) translateX(28px)}}
 
-  /* Tropical (playa) */
-  .s-trop{background:linear-gradient(180deg,#0b2a4a 0%,#1c5e86 35%,#f59e6b 78%,#fcd9a8 100%)}
-  .s-trop .orb{width:120px;height:120px;bottom:34vh;right:18%;
-    background:radial-gradient(circle,#fff3c4,#ffb24d);box-shadow:0 0 90px 30px rgba(255,178,77,.6)}
-
-  /* Ciudad (noche) */
-  .s-city{background:linear-gradient(180deg,#0a0f2c 0%,#1a1b4b 45%,#3b2a63 80%,#6d3b73 100%)}
-  .s-city .orb{width:80px;height:80px;top:14vh;left:16%;
-    background:radial-gradient(circle,#fdfcf0,#dfe6ff);box-shadow:0 0 60px 18px rgba(223,230,255,.5)}
-
-  /* Nieve (montaña) */
-  .s-snow{background:linear-gradient(180deg,#0e2236 0%,#27537a 40%,#9cc3e0 80%,#e8f3ff 100%)}
-  .s-snow .orb{width:90px;height:90px;top:16vh;right:22%;
-    background:radial-gradient(circle,#ffffff,#cfe3ff);box-shadow:0 0 70px 22px rgba(207,227,255,.5)}
-
-  /* Desierto */
-  .s-desert{background:linear-gradient(180deg,#2a1a3a 0%,#a3506b 38%,#e98b53 72%,#f6c878 100%)}
-  .s-desert .orb{width:140px;height:140px;bottom:30vh;left:20%;
-    background:radial-gradient(circle,#fff0c0,#ff9d4d);box-shadow:0 0 100px 34px rgba(255,157,77,.55)}
-
-  /* Estrellas (ciudad/nieve) */
-  .stars{position:absolute;inset:0;
-    background-image:radial-gradient(1.5px 1.5px at 20% 18%,#fff,transparent),radial-gradient(1.5px 1.5px at 70% 26%,#cfe3ff,transparent),radial-gradient(1px 1px at 45% 12%,#fff,transparent),radial-gradient(1px 1px at 85% 20%,#fff,transparent),radial-gradient(1.5px 1.5px at 33% 30%,#fff,transparent);
-    opacity:.7}
-
-  /* Nieve cayendo */
-  .flakes i{position:absolute;top:-10px;color:#fff;opacity:.9;animation:fall linear infinite}
-  @keyframes fall{0%{transform:translateY(-10px) translateX(0)}100%{transform:translateY(105vh) translateX(30px)}}
-
-  /* Capa para legibilidad del texto */
   .veil{position:fixed;inset:0;z-index:1;pointer-events:none;
     background:radial-gradient(120% 80% at 50% 0%,rgba(6,12,26,.25),rgba(6,12,26,.7) 75%)}
 
@@ -61,17 +31,12 @@
   .wrap{position:relative;z-index:2;max-width:820px;margin:0 auto;padding:70px 20px 90px;text-align:center}
   .plane{font-size:46px;display:inline-block;animation:fly 5s ease-in-out infinite;filter:drop-shadow(0 4px 12px rgba(0,0,0,.4))}
   @keyframes fly{0%,100%{transform:translateY(0) rotate(-8deg)}50%{transform:translateY(-14px) rotate(-2deg)}}
-  .badge{display:inline-block;font-size:13px;color:var(--text);border:1px solid var(--border);border-radius:999px;
-    padding:6px 16px;margin:14px 0 24px;background:rgba(10,17,32,.4);backdrop-filter:blur(6px)}
-  h1{font-size:clamp(48px,11vw,92px);margin:0 0 10px;letter-spacing:-2px;font-weight:800;
-    text-shadow:0 4px 30px rgba(0,0,0,.5)}
-  .tag{font-size:clamp(18px,3.6vw,24px);color:var(--text);margin:0 auto 14px;max-width:600px;text-shadow:0 2px 14px rgba(0,0,0,.5)}
-  /* palabra que rota con las escenas */
-  .rot{position:relative;display:inline-block;min-width:6.5ch;text-align:left;font-weight:800;color:#fff}
-  .rot span{position:absolute;left:0;opacity:0;white-space:nowrap;animation:word 36s linear infinite}
-  .rot .w1{animation-delay:0s}.rot .w2{animation-delay:-9s}.rot .w3{animation-delay:-18s}.rot .w4{animation-delay:-27s}
-  @keyframes word{0%{opacity:0;transform:translateY(8px)}5%{opacity:1;transform:none}25%{opacity:1}31%{opacity:0;transform:translateY(-8px)}100%{opacity:0}}
-  .w1{color:#ffd08a}.w2{color:#bcd0ff}.w3{color:#dff1ff}.w4{color:#ffcf8f}
+  .badge{display:inline-block;font-size:13px;border:1px solid var(--border);border-radius:999px;padding:6px 16px;
+    margin:14px 0 24px;background:rgba(10,17,32,.4);backdrop-filter:blur(6px)}
+  h1{font-size:clamp(48px,11vw,92px);margin:0 0 10px;letter-spacing:-2px;font-weight:800;text-shadow:0 4px 30px rgba(0,0,0,.5)}
+  .tag{font-size:clamp(18px,3.6vw,24px);margin:0 auto 14px;max-width:620px;text-shadow:0 2px 14px rgba(0,0,0,.5)}
+  .rot{position:relative;display:inline-block;min-width:7ch;text-align:left;font-weight:800}
+  .rot span{position:absolute;left:0;opacity:0;white-space:nowrap}  /* animación 'word' la asigna el JS */
 
   .cta{position:relative;display:inline-block;margin-top:22px;text-decoration:none;font-weight:800;font-size:19px;
     color:#04121f;background:linear-gradient(180deg,#7dd3fc,#38bdf8);padding:17px 40px;border-radius:16px;
@@ -84,80 +49,25 @@
 
   .features{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin:70px 0 0;text-align:left}
   @media (max-width:560px){.features{grid-template-columns:1fr}}
-  .card{background:rgba(12,20,38,.55);border:1px solid var(--border);border-radius:16px;padding:22px;
-    backdrop-filter:blur(10px);transition:transform .2s,border-color .2s,box-shadow .2s}
+  .card{background:rgba(12,20,38,.55);border:1px solid var(--border);border-radius:16px;padding:22px;backdrop-filter:blur(10px);
+    transition:transform .2s,border-color .2s,box-shadow .2s}
   .card:hover{transform:translateY(-6px);border-color:var(--accent);box-shadow:0 16px 40px rgba(0,0,0,.45)}
-  .card .emoji{font-size:30px}
-  .card h3{margin:12px 0 6px;font-size:16px}
-  .card p{margin:0;color:var(--muted);font-size:14px}
-
-  .how{margin-top:60px;text-align:left;background:rgba(12,20,38,.5);border:1px solid var(--border);
-    border-radius:18px;padding:10px 26px;backdrop-filter:blur(10px);list-style:none;counter-reset:s}
+  .card .emoji{font-size:30px}.card h3{margin:12px 0 6px;font-size:16px}.card p{margin:0;color:var(--muted);font-size:14px}
+  .how{margin-top:60px;text-align:left;background:rgba(12,20,38,.5);border:1px solid var(--border);border-radius:18px;
+    padding:10px 26px;backdrop-filter:blur(10px);list-style:none;counter-reset:s}
   .how li{margin:18px 0;color:var(--muted);padding-left:44px;position:relative;counter-increment:s}
   .how li::before{content:counter(s);position:absolute;left:0;top:-2px;width:30px;height:30px;display:grid;place-items:center;
     border-radius:50%;font-weight:800;color:#04121f;background:linear-gradient(180deg,#7dd3fc,#38bdf8)}
   .how b{color:var(--text)}
-  footer{margin-top:60px;color:var(--muted);font-size:13px}
-  footer a{color:var(--accent);text-decoration:none}
-
+  footer{margin-top:60px;color:var(--muted);font-size:13px}footer a{color:var(--accent);text-decoration:none}
   .reveal{opacity:0;transform:translateY(22px);animation:rise .7s cubic-bezier(.2,.7,.2,1) forwards}
   .d1{animation-delay:.05s}.d2{animation-delay:.15s}.d3{animation-delay:.28s}.d4{animation-delay:.42s}.d5{animation-delay:.56s}.d6{animation-delay:.7s}
   @keyframes rise{to{opacity:1;transform:none}}
-
-  @media (prefers-reduced-motion:reduce){
-    *{animation:none!important}
-    .scene.s1{opacity:1}.reveal{opacity:1;transform:none}
-    .rot .w1{opacity:1}
-  }
+  @media (prefers-reduced-motion:reduce){*{animation:none!important}.reveal{opacity:1;transform:none}}
 </style>
 </head>
 <body>
-  <div class="scenes" aria-hidden="true">
-    <div class="scene s1 s-trop">
-      <div class="orb"></div>
-      <svg class="silh" viewBox="0 0 1440 320" preserveAspectRatio="none">
-        <path fill="#06283d" d="M0,230 Q360,180 720,220 T1440,210 L1440,320 L0,320 Z"/>
-        <g fill="#04202f">
-          <rect x="180" y="150" width="10" height="120"/><path d="M185,150 q-60,-20 -70,10 q50,-30 70,0 q-10,-55 35,-50 q-30,15 -35,40 q40,-25 70,-5 q-55,-25 -70,5 z"/>
-          <rect x="1180" y="135" width="12" height="140"/><path d="M1186,135 q-70,-22 -82,12 q58,-34 82,0 q-12,-62 40,-58 q-35,18 -40,46 q46,-28 80,-6 q-62,-28 -80,6 z"/>
-        </g>
-      </svg>
-    </div>
-    <div class="scene s2 s-city">
-      <div class="stars"></div><div class="orb"></div>
-      <svg class="silh" viewBox="0 0 1440 320" preserveAspectRatio="none">
-        <g fill="#0a0f24">
-          <rect x="40" y="160" width="90" height="160"/><rect x="150" y="110" width="70" height="210"/>
-          <rect x="240" y="180" width="80" height="140"/><rect x="340" y="90" width="60" height="230"/>
-          <rect x="420" y="150" width="100" height="170"/><rect x="540" y="60" width="64" height="260"/>
-          <rect x="620" y="140" width="90" height="180"/><rect x="730" y="100" width="76" height="220"/>
-          <rect x="826" y="170" width="96" height="150"/><rect x="940" y="80" width="66" height="240"/>
-          <rect x="1020" y="150" width="92" height="170"/><rect x="1130" y="120" width="72" height="200"/>
-          <rect x="1220" y="175" width="100" height="145"/><rect x="1330" y="110" width="80" height="210"/>
-        </g>
-        <g fill="#ffd56b" opacity=".85">
-          <rect x="60" y="180" width="8" height="10"/><rect x="84" y="200" width="8" height="10"/><rect x="168" y="130" width="7" height="9"/><rect x="188" y="160" width="7" height="9"/><rect x="360" y="110" width="7" height="9"/><rect x="380" y="150" width="7" height="9"/><rect x="558" y="84" width="7" height="9"/><rect x="578" y="120" width="7" height="9"/><rect x="750" y="124" width="7" height="9"/><rect x="958" y="104" width="7" height="9"/><rect x="1044" y="172" width="7" height="9"/><rect x="1148" y="146" width="7" height="9"/><rect x="1350" y="134" width="7" height="9"/>
-        </g>
-      </svg>
-    </div>
-    <div class="scene s3 s-snow">
-      <div class="stars" style="opacity:.4"></div><div class="orb"></div>
-      <div class="flakes"></div>
-      <svg class="silh" viewBox="0 0 1440 320" preserveAspectRatio="none">
-        <path fill="#274b6d" d="M0,320 L0,150 L260,300 L520,140 L820,300 L1080,120 L1440,300 L1440,320 Z"/>
-        <path fill="#dcecff" d="M520,140 L480,180 L560,180 Z M1080,120 L1040,165 L1120,165 Z M260,300 L235,265 L285,265 Z"/>
-        <path fill="#bcd4ee" d="M0,320 L0,230 L360,300 L760,210 L1140,300 L1440,235 L1440,320 Z"/>
-      </svg>
-    </div>
-    <div class="scene s4 s-desert">
-      <div class="orb"></div>
-      <svg class="silh" viewBox="0 0 1440 320" preserveAspectRatio="none">
-        <path fill="#7a3b3f" d="M0,260 Q300,200 640,250 T1440,240 L1440,320 L0,320 Z"/>
-        <path fill="#9c4f48" d="M0,300 Q360,250 760,290 T1440,285 L1440,320 L0,320 Z"/>
-        <g fill="#5c2d34"><rect x="300" y="210" width="8" height="60"/><path d="M304,210 q-30,-8 -34,8 q26,-16 34,0 q-6,-26 18,-26 q-16,8 -18,20 q22,-12 36,-2 q-28,-12 -36,2 z"/></g>
-      </svg>
-    </div>
-  </div>
+  <div class="scenes" aria-hidden="true"></div>
   <div class="veil"></div>
 
   <main class="wrap">
@@ -165,42 +75,134 @@
     <div><span class="badge reveal d2">620 destinos · 100% en tu navegador · gratis</span></div>
     <h1 class="reveal d2">Viajes</h1>
     <p class="tag reveal d3">¿A dónde voy? Tu próxima aventura de
-      <span class="rot"><span class="w1">playa</span><span class="w2">ciudad</span><span class="w3">nieve</span><span class="w4">desierto</span></span>,
-      con el <b>mejor clima</b>.</p>
+      <span class="rot" id="rot"></span>, con el <b>mejor clima</b>.</p>
     <div class="reveal d4">
       <a class="cta" href="/viajes/">Abrir la app →</a>
       <div class="sub">Sin cuentas · sin servidor · sin tracking</div>
     </div>
-
     <section class="features">
       <div class="card reveal d3"><div class="emoji">🌎</div><h3>Descubrí por clima</h3><p>Filtrá por temperatura, lluvia, playa o montaña, presupuesto y horas de vuelo. Te dice si el mes es ideal, bueno o para evitar.</p></div>
       <div class="card reveal d4"><div class="emoji">✨</div><h3>Creá el viaje en un click</h3><p>Elegís el destino y el viaje se arma solo, con fechas según el mes elegido. Nada de formularios aburridos.</p></div>
       <div class="card reveal d5"><div class="emoji">💰</div><h3>Gastos del grupo</h3><p>Quién pagó qué, dividido entre todos, con balances automáticos y multimoneda.</p></div>
       <div class="card reveal d6"><div class="emoji">🌕</div><h3>Mareas y luna</h3><p>Para destinos costeros calcula fases lunares y ventanas de marea baja.</p></div>
     </section>
-
     <ol class="how reveal d5">
       <li><b>Descubrí:</b> entrás y movés los sliders — cuándo viajás y qué clima te gusta.</li>
       <li><b>Crear viaje:</b> tocás <b>+ Crear viaje</b> en el destino que te enamoró.</li>
       <li><b>Disfrutá:</b> armás el itinerario, cargás gastos y exportás al calendario.</li>
     </ol>
-
     <footer class="reveal d6">Hecho con ☕ por <a href="https://github.com/jmg">jmg</a> · <a href="/viajes/">Probar Viajes →</a></footer>
   </main>
 
   <script>
-    // Genera copos de nieve para la escena de montaña
-    var f=document.querySelector('.flakes');
-    if(f && !matchMedia('(prefers-reduced-motion: reduce)').matches){
-      for(var i=0;i<40;i++){var s=document.createElement('i');
-        s.textContent='❄';
-        s.style.left=Math.random()*100+'vw';
-        s.style.fontSize=(8+Math.random()*14)+'px';
-        s.style.animationDuration=(6+Math.random()*8)+'s';
-        s.style.animationDelay=(-Math.random()*10)+'s';
-        s.style.opacity=(.4+Math.random()*.6);
-        f.appendChild(s);}
+  /* =======================================================================
+     THEMES — agregar un theme es sumar un objeto a este array. El resto
+     (escena, palabra rotativa y los tiempos de transición) se genera solo.
+     Campos:
+       id, word, wordColor   -> palabra que rota en el título
+       sky                   -> fondo del cielo (cualquier CSS background)
+       orb                   -> sol/luna: {size, pos:{top|bottom,left|right}, core, glow}
+       stars                 -> opacidad de estrellas (0 = sin estrellas)
+       snow                  -> true para copos cayendo
+       silhouette            -> SVG (viewBox 0 0 1440 320) de la silueta inferior
+  ======================================================================= */
+  const THEMES = [
+    {
+      id:'trop', word:'playa', wordColor:'#ffd08a',
+      sky:'linear-gradient(180deg,#0b2a4a 0%,#1c5e86 35%,#f59e6b 78%,#fcd9a8 100%)',
+      orb:{size:120,pos:{bottom:'34vh',right:'18%'},core:'#fff3c4,#ffb24d',glow:'90px 30px rgba(255,178,77,.6)'},
+      stars:0, snow:false,
+      silhouette:`<path fill="#06283d" d="M0,230 Q360,180 720,220 T1440,210 L1440,320 L0,320 Z"/>
+        <g fill="#04202f"><rect x="180" y="150" width="10" height="120"/><path d="M185,150 q-60,-20 -70,10 q50,-30 70,0 q-10,-55 35,-50 q-30,15 -35,40 q40,-25 70,-5 q-55,-25 -70,5 z"/>
+        <rect x="1180" y="135" width="12" height="140"/><path d="M1186,135 q-70,-22 -82,12 q58,-34 82,0 q-12,-62 40,-58 q-35,18 -40,46 q46,-28 80,-6 q-62,-28 -80,6 z"/></g>`
+    },
+    {
+      id:'city', word:'ciudad', wordColor:'#bcd0ff',
+      sky:'linear-gradient(180deg,#0a0f2c 0%,#1a1b4b 45%,#3b2a63 80%,#6d3b73 100%)',
+      orb:{size:80,pos:{top:'14vh',left:'16%'},core:'#fdfcf0,#dfe6ff',glow:'60px 18px rgba(223,230,255,.5)'},
+      stars:.7, snow:false,
+      silhouette:`<g fill="#0a0f24"><rect x="40" y="160" width="90" height="160"/><rect x="150" y="110" width="70" height="210"/><rect x="240" y="180" width="80" height="140"/><rect x="340" y="90" width="60" height="230"/><rect x="420" y="150" width="100" height="170"/><rect x="540" y="60" width="64" height="260"/><rect x="620" y="140" width="90" height="180"/><rect x="730" y="100" width="76" height="220"/><rect x="826" y="170" width="96" height="150"/><rect x="940" y="80" width="66" height="240"/><rect x="1020" y="150" width="92" height="170"/><rect x="1130" y="120" width="72" height="200"/><rect x="1220" y="175" width="100" height="145"/><rect x="1330" y="110" width="80" height="210"/></g>
+        <g fill="#ffd56b" opacity=".85"><rect x="60" y="180" width="8" height="10"/><rect x="84" y="200" width="8" height="10"/><rect x="168" y="130" width="7" height="9"/><rect x="360" y="110" width="7" height="9"/><rect x="558" y="84" width="7" height="9"/><rect x="750" y="124" width="7" height="9"/><rect x="958" y="104" width="7" height="9"/><rect x="1044" y="172" width="7" height="9"/><rect x="1148" y="146" width="7" height="9"/><rect x="1350" y="134" width="7" height="9"/></g>`
+    },
+    {
+      id:'snow', word:'nieve', wordColor:'#dff1ff',
+      sky:'linear-gradient(180deg,#0e2236 0%,#27537a 40%,#9cc3e0 80%,#e8f3ff 100%)',
+      orb:{size:90,pos:{top:'16vh',right:'22%'},core:'#ffffff,#cfe3ff',glow:'70px 22px rgba(207,227,255,.5)'},
+      stars:.4, snow:true,
+      silhouette:`<path fill="#274b6d" d="M0,320 L0,150 L260,300 L520,140 L820,300 L1080,120 L1440,300 L1440,320 Z"/>
+        <path fill="#dcecff" d="M520,140 L480,180 L560,180 Z M1080,120 L1040,165 L1120,165 Z M260,300 L235,265 L285,265 Z"/>
+        <path fill="#bcd4ee" d="M0,320 L0,230 L360,300 L760,210 L1140,300 L1440,235 L1440,320 Z"/>`
+    },
+    {
+      id:'desert', word:'desierto', wordColor:'#ffcf8f',
+      sky:'linear-gradient(180deg,#2a1a3a 0%,#a3506b 38%,#e98b53 72%,#f6c878 100%)',
+      orb:{size:140,pos:{bottom:'30vh',left:'20%'},core:'#fff0c0,#ff9d4d',glow:'100px 34px rgba(255,157,77,.55)'},
+      stars:0, snow:false,
+      silhouette:`<path fill="#7a3b3f" d="M0,260 Q300,200 640,250 T1440,240 L1440,320 L0,320 Z"/>
+        <path fill="#9c4f48" d="M0,300 Q360,250 760,290 T1440,285 L1440,320 L0,320 Z"/>
+        <g fill="#5c2d34"><rect x="300" y="210" width="8" height="60"/><path d="M304,210 q-30,-8 -34,8 q26,-16 34,0 q-6,-26 18,-26 q-16,8 -18,20 q22,-12 36,-2 q-28,-12 -36,2 z"/></g>`
+    },
+    {
+      id:'jungle', word:'selva', wordColor:'#bdf0b0',
+      sky:'linear-gradient(180deg,#06241f 0%,#0e5a3f 45%,#3f9d57 82%,#cdeaa0 100%)',
+      orb:{size:100,pos:{top:'18vh',left:'24%'},core:'#fbffd8,#f2e07a',glow:'70px 22px rgba(242,224,122,.45)'},
+      stars:0, snow:false,
+      silhouette:`<path fill="#04241a" d="M0,250 Q240,200 480,245 T960,245 T1440,250 L1440,320 L0,320 Z"/>
+        <g fill="#063626"><path d="M120,250 q-40,-90 -10,-150 q-30,70 10,150 z"/><path d="M120,200 q70,-30 110,-10 q-60,-5 -110,30 z"/><path d="M120,210 q-70,-22 -110,4 q60,-6 110,16 z"/>
+        <path d="M1280,250 q-46,-100 -12,-165 q-32,78 12,165 z"/><path d="M1280,196 q78,-34 122,-12 q-66,-6 -122,34 z"/></g>`
     }
+  ];
+
+  const SLOT = 9;                       // segundos por theme
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const N = THEMES.length, T = N * SLOT, seg = 100 / N;
+
+  // Keyframes dinámicos: cada escena/ palabra es visible ~1 slot, con crossfade.
+  const kf = document.createElement('style');
+  kf.textContent =
+    `@keyframes show{0%{opacity:0}2%{opacity:1}${(seg-2).toFixed(2)}%{opacity:1}${seg.toFixed(2)}%{opacity:0}100%{opacity:0}}`+
+    `@keyframes word{0%{opacity:0;transform:translateY(10px)}2%{opacity:1;transform:none}${(seg-2).toFixed(2)}%{opacity:1}${seg.toFixed(2)}%{opacity:0;transform:translateY(-10px)}100%{opacity:0}}`;
+  document.head.appendChild(kf);
+
+  const scenes = document.querySelector('.scenes');
+  const rot = document.getElementById('rot');
+
+  THEMES.forEach((t, i) => {
+    const delay = (-i * SLOT) + 's';
+    // Escena
+    const sc = document.createElement('div');
+    sc.className = 'scene';
+    sc.style.background = t.sky;
+    if (!reduce) { sc.style.animation = `show ${T}s linear infinite`; sc.style.animationDelay = delay; }
+    else if (i === 0) sc.style.opacity = 1;
+
+    if (t.stars) { const s=document.createElement('div'); s.className='stars'; s.style.opacity=t.stars; sc.appendChild(s); }
+    if (t.orb) {
+      const o=document.createElement('div'); o.className='orb';
+      o.style.width=o.style.height=t.orb.size+'px';
+      Object.assign(o.style, t.orb.pos);
+      o.style.background=`radial-gradient(circle,${t.orb.core})`;
+      o.style.boxShadow=`0 0 ${t.orb.glow}`;
+      sc.appendChild(o);
+    }
+    if (t.snow && !reduce) {
+      const f=document.createElement('div'); f.className='flakes';
+      for (let k=0;k<40;k++){ const fl=document.createElement('i'); fl.textContent='❄';
+        fl.style.left=Math.random()*100+'vw'; fl.style.fontSize=(8+Math.random()*14)+'px';
+        fl.style.animationDuration=(6+Math.random()*8)+'s'; fl.style.animationDelay=(-Math.random()*10)+'s';
+        fl.style.opacity=(.4+Math.random()*.6); f.appendChild(fl); }
+      sc.appendChild(f);
+    }
+    sc.insertAdjacentHTML('beforeend',
+      `<svg class="silh" viewBox="0 0 1440 320" preserveAspectRatio="none">${t.silhouette}</svg>`);
+    scenes.appendChild(sc);
+
+    // Palabra rotativa
+    const w=document.createElement('span'); w.textContent=t.word; w.style.color=t.wordColor;
+    if (!reduce) { w.style.animation=`word ${T}s linear infinite`; w.style.animationDelay=delay; }
+    else if (i===0) w.style.opacity=1;
+    rot.appendChild(w);
+  });
   </script>
 </body>
 </html>
