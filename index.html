@@ -39,7 +39,7 @@
     margin:14px 0 24px;background:rgba(10,17,32,.4);backdrop-filter:blur(6px)}
   h1{font-size:clamp(48px,11vw,92px);margin:0 0 10px;letter-spacing:-2px;font-weight:800;text-shadow:0 4px 30px rgba(0,0,0,.55)}
   .tag{font-size:clamp(18px,3.6vw,24px);margin:0 auto 14px;max-width:620px;text-shadow:0 2px 14px rgba(0,0,0,.55)}
-  .rot{position:relative;display:inline-block;min-width:7ch;text-align:left;font-weight:800}
+  .rot{position:relative;display:inline-block;text-align:left;font-weight:800}
   .rot span{position:absolute;left:0;opacity:0;white-space:nowrap}   /* animación 'word' la asigna el JS */
   .cta{position:relative;display:inline-block;margin-top:22px;text-decoration:none;font-weight:800;font-size:19px;
     color:#04121f;background:linear-gradient(180deg,#7dd3fc,#38bdf8);padding:17px 40px;border-radius:16px;
@@ -135,6 +135,8 @@
   document.head.appendChild(kf);
 
   const scenes = document.querySelector('.scenes'), rot = document.getElementById('rot');
+  const longest = THEMES.reduce((a,t)=>t.word.length>a.length?t.word:a,'');
+  const sizer=document.createElement('span'); sizer.className='sizer'; sizer.textContent=longest; rot.appendChild(sizer);
   THEMES.forEach((t, i) => {
     const delay = (-i * SLOT) + 's';
     const sc = document.createElement('div');
@@ -153,7 +155,7 @@
     sc.insertAdjacentHTML('beforeend', `<div class="ground"></div><div class="art">${t.art}</div>`);
     scenes.appendChild(sc);
 
-    const w=document.createElement('span'); w.textContent=t.word; w.style.color=t.wordColor;
+    const w=document.createElement('span'); w.className='opt'; w.textContent=t.word; w.style.color=t.wordColor;
     if (!reduce) { w.style.animation=`word ${T}s linear infinite`; w.style.animationDelay=delay; }
     else if (i===0) w.style.opacity=1;
     rot.appendChild(w);
