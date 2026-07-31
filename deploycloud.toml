@@ -1,0 +1,3 @@
+# Config de build/deploy que lee deploycloud en cada deploy.
+port = 3000
+healthPath = "/healthz"
