@@ -9,8 +9,8 @@ const path = require('node:path');
 
 const PORT = Number(process.env.PORT || 3000);
 const ROOT = path.resolve(__dirname, process.env.SITE_DIR || 'site');
-/* La landing linkea a /viajes/, que vive en otro repo y se publica en GitHub
-   Pages — redirigimos para que el botón siga andando en cualquier dominio. */
+/* /viajes/ vive en otro repo y se publica en GitHub Pages. El portfolio linkea
+   directo, pero el redirect queda para que los enlaces viejos sigan andando. */
 const VIAJES_URL = process.env.VIAJES_URL || 'https://jmg.github.io/viajes/';
 
 const TYPES = {

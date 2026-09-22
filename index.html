@@ -1,133 +1,540 @@
 <!doctype html>
-<html lang="es">
+<html lang="en">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Viajes — descubrí destinos según el clima</title>
-<meta name="description" content="Decinos cuándo querés viajar y qué te gusta: te recomendamos destinos con el mejor clima. Creás el viaje en un click. Gratis, sin cuentas, todo en tu navegador." />
+<title>Juan Manuel García — Python &amp; full-stack engineer</title>
+<meta name="description" content="Python and full-stack engineer in Buenos Aires. I build products and run them in production: a network of 21+ Shopify apps used by 10,000+ merchants, DeployCloud (managed PaaS), and Crawley, an open source Python crawling framework. Toptal Verified Expert." />
+<link rel="canonical" href="https://jmg.github.io/" />
+<meta name="author" content="Juan Manuel García" />
+<meta name="theme-color" content="#070b18" />
+
+<meta property="og:type" content="profile" />
+<meta property="og:title" content="Juan Manuel García — Python &amp; full-stack engineer" />
+<meta property="og:description" content="I build products and run them in production: 21+ Shopify apps for 10,000+ merchants, DeployCloud (managed PaaS), and Crawley, an open source Python crawling framework." />
+<meta property="og:url" content="https://jmg.github.io/" />
+<meta property="og:image" content="https://jmg.github.io/assets/jmg.jpg" />
+<meta name="twitter:card" content="summary" />
+
+<!-- Fuente del badge de Toptal (proxima-nova). Es lo unico que se carga de afuera. -->
+<link rel="stylesheet" href="https://use.typekit.net/kmj5qkr.css" />
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23204ecf'/%3E%3Ctext x='32' y='43' font-family='system-ui,sans-serif' font-size='30' font-weight='700' fill='%23fff' text-anchor='middle'%3EJM%3C/text%3E%3C/svg%3E" />
+
 <style>
-  :root{--text:#eef4ff;--muted:#c7d4ea;--border:rgba(255,255,255,.2);--accent:#38bdf8}
+  :root{
+    --bg:#070b18; --bg-2:#0b1224; --card:rgba(255,255,255,.035); --card-hi:rgba(255,255,255,.06);
+    --line:rgba(140,170,255,.14); --line-hi:rgba(120,160,255,.42);
+    --text:#e9eefc; --muted:#9fb0d4; --dim:#74849f;
+    --blue:#4f8cff; --blue-2:#25a9ef; --deep:#204ecf;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    --max:1080px;
+  }
   *{box-sizing:border-box}
   html{scroll-behavior:smooth}
-  body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--text);
-    min-height:100vh;line-height:1.55;overflow-x:hidden;background:#0a1120}
+  body{
+    margin:0;background:var(--bg);color:var(--text);line-height:1.6;
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;overflow-x:hidden;
+  }
+  /* Luz de fondo: dos halos fijos + una grilla muy tenue. Nada de imágenes. */
+  body::before{
+    content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;
+    background:
+      radial-gradient(70ch 60ch at 82% -10%,rgba(37,169,239,.16),transparent 70%),
+      radial-gradient(60ch 50ch at 5% 8%,rgba(32,78,207,.22),transparent 70%),
+      linear-gradient(180deg,var(--bg-2),var(--bg) 55%);
+  }
+  body::after{
+    content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.35;
+    background-image:linear-gradient(rgba(160,190,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(160,190,255,.05) 1px,transparent 1px);
+    background-size:64px 64px;
+    mask-image:radial-gradient(70% 55% at 50% 0,#000,transparent 75%);
+  }
+  a{color:var(--blue);text-decoration:none}
+  a:hover{text-decoration:underline;text-underline-offset:3px}
+  h1,h2,h3{line-height:1.15;letter-spacing:-.02em;margin:0}
+  .wrap{max-width:var(--max);margin:0 auto;padding:0 22px}
+  .eyebrow{
+    font:600 11.5px/1 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--blue-2);
+    display:flex;align-items:center;gap:10px;margin:0 0 18px;
+  }
+  .eyebrow::after{content:"";height:1px;flex:1;background:linear-gradient(90deg,var(--line-hi),transparent)}
 
-  /* ===== Fondo: fotos reales con crossfade + ken burns ===== */
-  .scenes{position:fixed;inset:0;z-index:0;overflow:hidden;background:#0a1120}
-  .scene{position:absolute;inset:0;opacity:0}                 /* animación 'show' por JS */
-  .scene .bg{position:absolute;inset:-3%;background-size:cover;background-position:center;
-    animation:zoom 36s ease-in-out infinite}
-  @keyframes zoom{0%{transform:scale(1.03)}50%{transform:scale(1.12)}100%{transform:scale(1.03)}}
-  .flakes i{position:absolute;top:-12px;color:#fff;animation:fall linear infinite;text-shadow:0 0 4px rgba(255,255,255,.6)}
-  @keyframes fall{0%{transform:translateY(-12px) translateX(0)}100%{transform:translateY(110vh) translateX(28px)}}
-  .veil{position:fixed;inset:0;z-index:1;pointer-events:none;
-    background:linear-gradient(180deg,rgba(6,12,26,.55),rgba(6,12,26,.35) 35%,rgba(6,12,26,.7))}
+  /* ============ nav ============ */
+  header{position:sticky;top:0;z-index:30;backdrop-filter:blur(14px);background:rgba(7,11,24,.72);border-bottom:1px solid transparent;transition:border-color .25s}
+  header.stuck{border-bottom-color:var(--line)}
+  nav{max-width:var(--max);margin:0 auto;padding:14px 22px;display:flex;align-items:center;gap:26px}
+  .brand{display:flex;align-items:center;gap:11px;font-weight:700;letter-spacing:-.01em;color:var(--text)}
+  .brand:hover{text-decoration:none}
+  .brand .mark{
+    width:30px;height:30px;border-radius:9px;display:grid;place-items:center;flex:none;
+    background:linear-gradient(153deg,#0667ff 18%,var(--deep) 60%,#0f256e);
+    font:700 12px/1 var(--mono);color:#fff;box-shadow:0 6px 18px rgba(32,78,207,.45)
+  }
+  .navlinks{display:flex;gap:22px;margin-left:auto;align-items:center;font-size:14.5px}
+  .navlinks a{color:var(--muted)}
+  .navlinks a:hover{color:var(--text);text-decoration:none}
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;font-weight:600;font-size:14.5px;
+    padding:9px 18px;border-radius:10px;border:1px solid transparent;white-space:nowrap;
+    background:linear-gradient(180deg,#3d84ff,var(--deep));color:#fff;
+    box-shadow:0 10px 24px rgba(32,78,207,.35);transition:transform .16s,box-shadow .16s
+  }
+  .btn:hover{transform:translateY(-2px);box-shadow:0 16px 34px rgba(32,78,207,.5);text-decoration:none}
+  .btn.ghost{background:var(--card-hi);border-color:var(--line);color:var(--text);box-shadow:none}
+  .btn.ghost:hover{border-color:var(--line-hi);background:rgba(255,255,255,.09)}
+  @media (max-width:780px){.navlinks a:not(.btn){display:none}}
 
-  /* ===== Contenido ===== */
-  .wrap{position:relative;z-index:2;max-width:820px;margin:0 auto;padding:70px 20px 90px;text-align:center}
-  .plane{font-size:46px;display:inline-block;animation:fly 5s ease-in-out infinite;filter:drop-shadow(0 4px 12px rgba(0,0,0,.5))}
-  @keyframes fly{0%,100%{transform:translateY(0) rotate(-8deg)}50%{transform:translateY(-14px) rotate(-2deg)}}
-  .badge{display:inline-block;font-size:13px;border:1px solid var(--border);border-radius:999px;padding:6px 16px;
-    margin:14px 0 24px;background:rgba(10,17,32,.45);backdrop-filter:blur(6px)}
-  h1{font-size:clamp(48px,11vw,92px);margin:0 0 10px;letter-spacing:-2px;font-weight:800;text-shadow:0 4px 30px rgba(0,0,0,.6)}
-  .tag{font-size:clamp(18px,3.6vw,24px);margin:0 auto 14px;max-width:640px;text-shadow:0 2px 16px rgba(0,0,0,.7)}
-  /* palabra rotativa: grid superpuesto (mismo baseline, sin absolute) */
-  .rot{display:inline-grid;text-align:center;font-weight:800;vertical-align:baseline}
-  .rot>span{grid-area:1/1;white-space:nowrap}
-  .rot .opt{opacity:0}
-  .rot .sizer{visibility:hidden}
-  .cta{position:relative;display:inline-block;margin-top:22px;text-decoration:none;font-weight:800;font-size:19px;
-    color:#04121f;background:linear-gradient(180deg,#7dd3fc,#38bdf8);padding:17px 40px;border-radius:16px;
-    box-shadow:0 14px 40px rgba(56,189,248,.55);transition:transform .15s,box-shadow .15s;overflow:hidden}
-  .cta:hover{transform:translateY(-3px) scale(1.02);box-shadow:0 20px 54px rgba(56,189,248,.75)}
-  .cta::after{content:"";position:absolute;top:0;left:-120%;width:60%;height:100%;
-    background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent);transform:skewX(-20deg);animation:sweep 3.2s ease-in-out infinite}
-  @keyframes sweep{0%{left:-120%}55%,100%{left:160%}}
-  .sub{margin-top:14px;font-size:13px;color:var(--muted)}
-  .features{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin:70px 0 0;text-align:left}
-  @media (max-width:560px){.features{grid-template-columns:1fr}}
-  .card{background:rgba(12,20,38,.6);border:1px solid var(--border);border-radius:16px;padding:22px;backdrop-filter:blur(10px);
-    transition:transform .2s,border-color .2s,box-shadow .2s}
-  .card:hover{transform:translateY(-6px);border-color:var(--accent);box-shadow:0 16px 40px rgba(0,0,0,.5)}
-  .card .emoji{font-size:30px}.card h3{margin:12px 0 6px;font-size:16px}.card p{margin:0;color:var(--muted);font-size:14px}
-  .how{margin-top:60px;text-align:left;background:rgba(12,20,38,.55);border:1px solid var(--border);border-radius:18px;
-    padding:10px 26px;backdrop-filter:blur(10px);list-style:none;counter-reset:s}
-  .how li{margin:18px 0;color:var(--muted);padding-left:44px;position:relative;counter-increment:s}
-  .how li::before{content:counter(s);position:absolute;left:0;top:-2px;width:30px;height:30px;display:grid;place-items:center;
-    border-radius:50%;font-weight:800;color:#04121f;background:linear-gradient(180deg,#7dd3fc,#38bdf8)}
-  .how b{color:var(--text)}
-  footer{margin-top:60px;color:var(--muted);font-size:13px}footer a{color:var(--accent);text-decoration:none}
-  .reveal{opacity:0;transform:translateY(22px);animation:rise .7s cubic-bezier(.2,.7,.2,1) forwards}
-  .d1{animation-delay:.05s}.d2{animation-delay:.15s}.d3{animation-delay:.28s}.d4{animation-delay:.42s}.d5{animation-delay:.56s}.d6{animation-delay:.7s}
-  @keyframes rise{to{opacity:1;transform:none}}
-  @media (prefers-reduced-motion:reduce){*{animation:none!important}.reveal{opacity:1;transform:none}}
+  /* ============ hero ============ */
+  .hero{padding:78px 0 30px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:48px;align-items:center}
+  .avatar{display:flex;align-items:center;gap:14px;margin-bottom:26px}
+  .avatar img{width:52px;height:52px;border-radius:50%;border:1px solid var(--line-hi);object-fit:cover}
+  .avatar .who{font-size:13.5px;color:var(--muted)}
+  .avatar .who b{display:block;color:var(--text);font-size:14.5px;font-weight:600}
+  h1{font-size:clamp(38px,6.4vw,66px);font-weight:800}
+  h1 .grad{background:linear-gradient(100deg,#eaf1ff 10%,#79b6ff 55%,#2f6dff);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .lede{font-size:clamp(17px,2.3vw,21px);color:var(--muted);margin:20px 0 0;max-width:36em}
+  .lede b{color:var(--text);font-weight:600}
+  .hero-cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
+  @media (max-width:900px){.hero{grid-template-columns:1fr;gap:38px;padding-top:52px}.badge-slot{justify-self:center}}
+
+  /* ============ stats ============ */
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:16px;overflow:hidden;margin:54px 0 0}
+  .stat{background:#080e1e;padding:20px 22px}
+  .stat .n{font:700 clamp(22px,3.4vw,30px)/1.1 system-ui;letter-spacing:-.02em}
+  .stat .n small{font-size:.6em;color:var(--blue-2);font-weight:700}
+  .stat .l{font-size:13px;color:var(--dim);margin-top:6px}
+  @media (max-width:720px){.stats{grid-template-columns:repeat(2,1fr)}}
+
+  /* ============ sections ============ */
+  section{padding:84px 0 0}
+  .s-head{margin-bottom:30px}
+  .s-head h2{font-size:clamp(25px,3.6vw,34px)}
+  .s-head p{color:var(--muted);margin:10px 0 0;max-width:52em}
+
+  /* ============ work ============ */
+  .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+  @media (max-width:820px){.grid{grid-template-columns:1fr}}
+  .proj{
+    position:relative;display:flex;flex-direction:column;border:1px solid var(--line);border-radius:18px;
+    padding:26px;background:var(--card);overflow:hidden;
+    transition:transform .2s ease,border-color .2s ease,background .2s ease
+  }
+  .proj::before{
+    content:"";position:absolute;inset:0 0 auto;height:1px;
+    background:linear-gradient(90deg,transparent,var(--line-hi),transparent);opacity:0;transition:opacity .25s
+  }
+  .proj:hover{transform:translateY(-4px);border-color:var(--line-hi);background:var(--card-hi)}
+  .proj:hover::before{opacity:1}
+  .proj.feature{grid-column:1/-1}
+  .proj h3{font-size:20px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+  .proj h3 a{color:var(--text)}
+  .proj h3 a:hover{color:var(--blue)}
+  .host{font:500 12.5px/1 var(--mono);color:var(--blue-2)}
+  .role{font:600 11px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin-bottom:12px}
+  .proj p{color:var(--muted);margin:10px 0 0;font-size:15px}
+  .proj code{font:500 13.5px/1 var(--mono);color:#cfe0ff;background:rgba(120,160,255,.12);border-radius:5px;padding:2px 6px}
+  .tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:auto;padding-top:18px}
+  .tag{font:500 12px/1 var(--mono);color:#b8c8ea;background:rgba(120,160,255,.09);border:1px solid var(--line);border-radius:999px;padding:5px 11px}
+
+  /* ============ open source ============ */
+  .repos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+  @media (max-width:820px){.repos{grid-template-columns:1fr}}
+  .repo{display:flex;gap:16px;align-items:flex-start;border:1px solid var(--line);border-radius:14px;padding:18px 20px;background:var(--card);transition:border-color .2s,background .2s}
+  .repo:hover{border-color:var(--line-hi);background:var(--card-hi)}
+  .repo .star{font:700 14px/1 var(--mono);color:#ffd27d;white-space:nowrap;padding-top:2px}
+  .repo b{display:block;font-size:15.5px;font-weight:650}
+  .repo b a{color:var(--text)}
+  .repo p{margin:5px 0 0;font-size:14px;color:var(--muted)}
+  .repo .lang{font:500 12px/1 var(--mono);color:var(--dim);margin-top:8px;display:block}
+  .os-foot{margin-top:18px;font-size:14.5px;color:var(--dim)}
+
+  /* ============ stack ============ */
+  .stack{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+  @media (max-width:820px){.stack{grid-template-columns:1fr}}
+  .pile{border:1px solid var(--line);border-radius:16px;padding:22px;background:var(--card)}
+  .pile h3{font:600 11.5px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--blue-2);margin-bottom:14px}
+  .pile .tags{padding-top:0}
+
+  /* ============ timeline ============ */
+  .tl{list-style:none;margin:0;padding:0 0 0 26px;border-left:1px solid var(--line)}
+  .tl li{position:relative;padding:0 0 26px}
+  .tl li::before{
+    content:"";position:absolute;left:-32px;top:7px;width:11px;height:11px;border-radius:50%;
+    background:var(--bg);border:2px solid var(--line-hi)
+  }
+  .tl li.now::before{background:var(--blue);border-color:var(--blue);box-shadow:0 0 0 5px rgba(79,140,255,.16)}
+  .tl .when{font:600 12px/1 var(--mono);color:var(--dim);letter-spacing:.06em}
+  .tl .what{font-size:16.5px;font-weight:650;margin:7px 0 0}
+  .tl .what span{font-weight:400;color:var(--muted)}
+  .tl p{margin:5px 0 0;color:var(--muted);font-size:14.5px}
+
+  /* ============ contact + footer ============ */
+  .contact{
+    margin-top:26px;border:1px solid var(--line);border-radius:20px;padding:38px;
+    background:radial-gradient(90ch 40ch at 15% -30%,rgba(32,78,207,.3),transparent 70%),var(--card);
+    display:grid;grid-template-columns:minmax(0,1fr) auto;gap:28px;align-items:center
+  }
+  .contact h2{font-size:clamp(24px,3.4vw,31px)}
+  .contact p{color:var(--muted);margin:12px 0 0;max-width:40em}
+  @media (max-width:820px){.contact{grid-template-columns:1fr;padding:28px}}
+  footer{margin-top:80px;border-top:1px solid var(--line);padding:26px 0 40px;font-size:14px;color:var(--dim)}
+  footer .wrap{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between}
+  footer .links{display:flex;gap:18px}
+
+  /* ============ Toptal badge (scoped: nada se escapa de #r) ============ */
+  #r{font-family:proxima-nova,system-ui,Arial,sans-serif;--hex:polygon(50% 0,100% 24%,100% 76%,50% 100%,0 76%,0 24%)}
+  #r .h{display:inline-block;background:var(--blue-2);padding:6px;clip-path:var(--hex);filter:drop-shadow(0 28px 50px rgba(6,30,96,.55))}
+  #r .a{
+    width:200px;padding:24px 0 40px;display:flex;flex-direction:column;align-items:center;gap:8px;
+    color:#fff;text-align:center;background:linear-gradient(153deg,#0667ff 18%,#204ecf 40%,#0f256e 80%);clip-path:var(--hex)
+  }
+  #r .b{margin:0;font-size:19px;font-weight:700;line-height:1;letter-spacing:0}
+  #r .c{width:120px;height:1px;background:var(--blue-2)}
+  #r .d{font-size:16px;opacity:.8;margin-bottom:-6px}
+  #r .f{
+    display:inline-flex;align-items:center;justify-content:center;padding:4px 20px;border-radius:6px;
+    background:#296bff;color:#fff;font-size:16px;font-weight:500;text-decoration:none
+  }
+  #r .f:hover{background:#4a83ff;text-decoration:none}
+  .badge-slot{display:flex;justify-content:center;transition:transform .3s ease}
+  .badge-slot:hover{transform:translateY(-4px)}
+
+  /* ============ reveal ============ */
+  .rv{opacity:0;transform:translateY(20px);transition:opacity .6s cubic-bezier(.2,.7,.2,1),transform .6s cubic-bezier(.2,.7,.2,1)}
+  .rv.in{opacity:1;transform:none}
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto}
+    *{transition:none!important;animation:none!important}
+    .rv{opacity:1;transform:none}
+  }
 </style>
 </head>
 <body>
-  <div class="scenes" aria-hidden="true"></div>
-  <div class="veil"></div>
-  <main class="wrap">
-    <div class="plane reveal d1">✈️</div>
-    <div><span class="badge reveal d2">620 destinos · 100% en tu navegador · gratis</span></div>
-    <h1 class="reveal d2">Viajes</h1>
-    <p class="tag reveal d3">¿A dónde voy? Tu próxima aventura de
-      <span class="rot" id="rot"></span>, con el <b>mejor clima</b>.</p>
-    <div class="reveal d4">
-      <a class="cta" href="/viajes/">Abrir la app →</a>
-      <div class="sub">Sin cuentas · sin servidor · sin tracking</div>
-    </div>
-    <section class="features">
-      <div class="card reveal d3"><div class="emoji">🌎</div><h3>Descubrí por clima</h3><p>Filtrá por temperatura, lluvia, playa o montaña, presupuesto y horas de vuelo. Te dice si el mes es ideal, bueno o para evitar.</p></div>
-      <div class="card reveal d4"><div class="emoji">✨</div><h3>Creá el viaje en un click</h3><p>Elegís el destino y el viaje se arma solo, con fechas según el mes elegido. Nada de formularios aburridos.</p></div>
-      <div class="card reveal d5"><div class="emoji">💰</div><h3>Gastos del grupo</h3><p>Quién pagó qué, dividido entre todos, con balances automáticos y multimoneda.</p></div>
-      <div class="card reveal d6"><div class="emoji">🌕</div><h3>Mareas y luna</h3><p>Para destinos costeros calcula fases lunares y ventanas de marea baja.</p></div>
-    </section>
-    <ol class="how reveal d5">
-      <li><b>Descubrí:</b> entrás y movés los sliders — cuándo viajás y qué clima te gusta.</li>
-      <li><b>Crear viaje:</b> tocás <b>+ Crear viaje</b> en el destino que te enamoró.</li>
-      <li><b>Disfrutá:</b> armás el itinerario, cargás gastos y exportás al calendario.</li>
-    </ol>
-    <footer class="reveal d6">Hecho con ☕ por <a href="https://github.com/jmg">jmg</a> · <a href="/viajes/">Probar Viajes →</a></footer>
-  </main>
 
-  <script>
-  /* THEMES — agregar uno: sumá un objeto. La escena (foto), la palabra y los
-     tiempos se generan solos. 'img' es una foto real en /scenes/. */
-  const THEMES = [
-    { word:'playa',    wordColor:'#ffd9a0', img:'scenes/beach.webp',  snow:false },
-    { word:'ciudad',   wordColor:'#cdd8ff', img:'scenes/city.webp',   snow:false },
-    { word:'nieve',    wordColor:'#e7f3ff', img:'scenes/snow.webp',   snow:true  },
-    { word:'desierto', wordColor:'#ffcf8f', img:'scenes/desert.webp', snow:false },
-    { word:'selva',    wordColor:'#bff0ad', img:'scenes/jungle.webp', snow:false },
-  ];
-  const SLOT = 8;
-  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const N = THEMES.length, T = N * SLOT, seg = 100 / N;
-  const kf = document.createElement('style');
-  kf.textContent =
-    `@keyframes show{0%{opacity:0}3%{opacity:1}${(seg-3).toFixed(2)}%{opacity:1}${seg.toFixed(2)}%{opacity:0}100%{opacity:0}}`+
-    `@keyframes word{0%{opacity:0;transform:translateY(10px)}3%{opacity:1;transform:none}${(seg-3).toFixed(2)}%{opacity:1}${seg.toFixed(2)}%{opacity:0;transform:translateY(-10px)}100%{opacity:0}}`;
-  document.head.appendChild(kf);
-  const scenes = document.querySelector('.scenes'), rot = document.getElementById('rot');
-  const longest = THEMES.reduce((a,t)=>t.word.length>a.length?t.word:a,'');
-  const sizer = document.createElement('span'); sizer.className='sizer'; sizer.textContent=longest; rot.appendChild(sizer);
-  THEMES.forEach((t,i)=>{
-    const delay = (-i*SLOT)+'s';
-    const sc = document.createElement('div'); sc.className='scene';
-    if(!reduce){ sc.style.animation=`show ${T}s linear infinite`; sc.style.animationDelay=delay; } else if(i===0) sc.style.opacity=1;
-    const bg = document.createElement('div'); bg.className='bg'; bg.style.backgroundImage=`url(${t.img})`;
-    if(reduce) bg.style.animation='none';
-    sc.appendChild(bg);
-    if(t.snow && !reduce){ const f=document.createElement('div'); f.className='flakes';
-      for(let k=0;k<36;k++){ const fl=document.createElement('i'); fl.textContent='❄';
-        fl.style.left=Math.random()*100+'vw'; fl.style.fontSize=(8+Math.random()*14)+'px';
-        fl.style.animationDuration=(6+Math.random()*8)+'s'; fl.style.animationDelay=(-Math.random()*10)+'s';
-        fl.style.opacity=(.4+Math.random()*.6); f.appendChild(fl);} sc.appendChild(f); }
-    scenes.appendChild(sc);
-    const w=document.createElement('span'); w.className='opt'; w.textContent=t.word; w.style.color=t.wordColor;
-    if(!reduce){ w.style.animation=`word ${T}s linear infinite`; w.style.animationDelay=delay; } else if(i===0) w.style.opacity=1;
-    rot.appendChild(w);
-  });
-  </script>
+<header id="top">
+  <nav>
+    <a class="brand" href="#top"><span class="mark">JM</span> Juan Manuel García</a>
+    <div class="navlinks">
+      <a href="#work">Work</a>
+      <a href="#open-source">Open source</a>
+      <a href="#stack">Stack</a>
+      <a href="#path">Path</a>
+      <a class="btn" href="https://www.toptal.com/developers/resume/juan-manuel-garcia#qPlopq" target="_blank" rel="noopener">Hire me</a>
+    </div>
+  </nav>
+</header>
+
+<main>
+  <!-- ===================== HERO ===================== -->
+  <div class="wrap">
+    <div class="hero">
+      <div>
+        <div class="avatar rv">
+          <img src="assets/jmg.jpg" alt="Juan Manuel García" width="52" height="52" loading="eager" />
+          <span class="who"><b>Juan Manuel García</b>Buenos Aires, Argentina · remote worldwide</span>
+        </div>
+        <h1 class="rv">I build products —<br /><span class="grad">and then I run them.</span></h1>
+        <p class="lede rv">
+          Python &amp; full-stack engineer, writing software professionally since 2008.
+          Today I build and operate <b>a network of 21+ Shopify apps</b> used by
+          <b>10,000+ merchants</b>, plus <b>DeployCloud</b>, a managed PaaS you can drive from a chat.
+          I also wrote <b>Crawley</b>, a Python crawling framework the community starred ~200 times.
+        </p>
+        <div class="hero-cta rv">
+          <a class="btn" href="#work">See the work ↓</a>
+          <a class="btn ghost" href="https://github.com/jmg" target="_blank" rel="noopener">GitHub</a>
+          <a class="btn ghost" href="https://www.toptal.com/developers/resume/juan-manuel-garcia#qPlopq" target="_blank" rel="noopener">Résumé</a>
+        </div>
+      </div>
+
+      <!-- Badge de Toptal: HTML tal como lo entrega Toptal, con el CSS scopeado a #r. -->
+      <div class="badge-slot rv">
+        <div id="r"><div class="h"><div class="a">
+          <svg width="64" viewBox="0 0 60 17" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="m20.85 6.38 6.06-.89 2.72-5.49 2.71 5.49 6.06.89-4.39 4.28 1.04 6.03-5.42-2.85-5.43 2.85 1.04-6.03zm33.06 7.17 1.85-.27.82-1.67.83 1.67 1.84.27-1.33 1.31.31 1.83-1.65-.87-1.66.87.32-1.83zm-3.38-3.01-3.61-.52-1.61-3.26-1.62 3.26-3.6.52 2.6 2.55-.61 3.59 3.23-1.69 3.21 1.69-.61-3.59zm-45.19 3.01-1.85-.27-.82-1.67-.83 1.67-1.84.27 1.33 1.31-.31 1.83 1.65-.87 1.65.87-.31-1.83zm3.38-3.01 3.61-.52 1.61-3.26 1.61 3.26 3.61.52-2.6 2.55.61 3.59-3.23-1.69-3.22 1.69.62-3.59z" fill="#fff"/></svg>
+          <h3 class="b">TOP 3% TALENT</h3>
+          <div class="c"></div>
+          <span class="d">Vetted by</span>
+          <svg viewBox="0 0 108 30" width="100" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Toptal"><g clip-rule="evenodd" fill="#fff" fill-rule="evenodd"><path d="m8.11 0 6.71 6.7c.05.05.09.1.15.15l5.85 5.85-9.51 9.46 4.35 4.36-2.91 2.89-6.66-6.66c-.08-.07-.16-.15-.24-.23l-5.85-5.84 9.48-9.43-4.32-4.31zm4.25 10.5c-.09-.02-.18-.02-.26 0-.09.03-.16.07-.32.22l-5.41 5.39c-.16.16-.2.23-.22.31-.03.09-.03.18 0 .26.02.09.07.17.22.32l1.72 1.72c.15.15.22.19.31.22.09.02.17.02.26 0 .09-.03.16-.07.31-.22l5.41-5.39c.16-.15.2-.23.23-.31.02-.09.02-.17 0-.26s-.07-.16-.22-.31l-1.72-1.72c-.15-.16-.23-.2-.31-.23z"/><path d="m62.65 7.76c2.11 0 3.91.82 5.34 2.4 1.46 1.53 2.19 3.64 2.18 6.26 0 2.56-.75 4.8-2.24 6.38-1.47 1.57-3.34 2.37-5.58 2.37-1.93-.01-3.68-.7-4.84-1.89l-.16-.17-.01 6.75-3.82-.01v-.28l.04-21.61h3.8l-.01 2.64c1.25-1.41 3.26-2.84 5.3-2.84zm24.45.06c2.18 0 3.68.49 4.84 1.44 1.11.92 1.7 2.56 1.75 4.29v.26l-.02 11.14h-3.87v-.46c0-.48 0-.97 0-1.47-1.12 1.55-2.68 2.3-4.76 2.3-1.65 0-3.05-.5-4.07-1.43-1.03-.94-1.58-2.23-1.58-3.73.02-2.83 2.02-4.79 5.52-5.4l.27-.05 4.64-.73v-.37c0-.78-.23-1.72-.69-2.11-.47-.4-1.04-.73-2.03-.73-2.73 0-3.29 2.01-3.32 3.02v.09l-3.42.04c0-1.49.69-3.42 2.08-4.63 1.12-.97 2.75-1.42 4.33-1.47h.3zm-14.98-4.36h3.81l-.01 4.56h3.53v3.18l-3.54-.01-.01 8.54c0 .94.19 1.56.6 1.85.43.3 1.3.02 1.3.02l.34 3.32s-1.2.31-1.96.31c-.99 0-1.84-.25-2.49-.75-1.06-.8-1.6-2.2-1.6-4.17l.02-9.12-3.19-3.19 3.2.01zm-22.46 6.8c1.1 1.13 2.41 3.14 2.4 6.26-.01 3.11-1.32 5.11-2.41 6.24-1.5 1.54-3.54 2.42-5.59 2.42-.08 0-.16 0-.25-.01-2.19-.01-4.13-.79-5.75-2.33-1.63-1.55-2.46-3.68-2.46-6.36s.84-4.82 2.47-6.36c1.62-1.53 3.55-2.3 5.75-2.3 2.17-.07 4.29.83 5.84 2.44zm-8.81-7.04v3.77l-7.36.01.02 17.97-3.97-.01v-.34l.03-17.63h-7.51l.01-3.77zm54.68.25 3.42.01v.09l-.03 21.38-3.42-.01v-.1zm-5.71 13.58-3.81.64c-1.86.32-2.72 1.04-2.73 2.3-.01 1.15.81 1.92 2.09 1.99h.16.02c2.44 0 4.17-1.9 4.26-4.67l.01-.22zm-46.02-5.84c-1.28 0-2.39.49-3.29 1.47-.88.96-1.33 2.24-1.33 3.81 0 1.58.45 2.86 1.33 3.82.89.98 2 1.47 3.28 1.48 1.3 0 2.42-.49 3.31-1.47.9-.98 1.35-2.26 1.36-3.81.01-1.56-.45-2.84-1.35-3.82s-2.01-1.48-3.31-1.48zm17.94.12h-.02c-1.28 0-2.34.46-3.24 1.43-.9.94-1.35 2.16-1.36 3.63 0 1.49.45 2.83 1.35 3.8.92.95 1.98 1.42 3.25 1.42 1.29 0 2.38-.48 3.25-1.41.91-.97 1.35-2.3 1.36-3.79 0-1.48-.46-2.7-1.34-3.63-.87-.96-1.96-1.45-3.25-1.45z"/></g></svg>
+          <a target="_blank" rel="noopener" class="f" href="https://www.toptal.com/developers/resume/juan-manuel-garcia#qPlopq">Hire me</a>
+        </div></div></div>
+      </div>
+    </div>
+
+    <!-- ===================== STATS ===================== -->
+    <div class="stats rv">
+      <div class="stat"><div class="n">2008</div><div class="l">writing software professionally</div></div>
+      <div class="stat"><div class="n">21<small>+</small></div><div class="l">Shopify apps in production</div></div>
+      <div class="stat"><div class="n">10k<small>+</small></div><div class="l">merchants served</div></div>
+      <div class="stat"><div class="n">70</div><div class="l">public repos · 136 followers</div></div>
+    </div>
+  </div>
+
+  <!-- ===================== WORK ===================== -->
+  <section id="work"><div class="wrap">
+    <div class="s-head rv">
+      <p class="eyebrow">Selected work</p>
+      <h2>Things I built, shipped and still operate</h2>
+      <p>Every one of these is live. I wrote the code, set up the infrastructure and answer for it when it breaks.</p>
+    </div>
+
+    <div class="grid">
+      <article class="proj feature rv">
+        <div class="role">Founder &amp; principal engineer</div>
+        <h3><a href="https://deploycloud.app/" target="_blank" rel="noopener">DeployCloud</a> <span class="host">deploycloud.app</span></h3>
+        <p>
+          A managed platform-as-a-service you can drive from a chat. <code>git push</code> — or ask Claude, Cursor
+          or any MCP client — and you get a live HTTPS app in any language: zero-downtime deploys, preview
+          environments, managed add-ons (Postgres, MySQL, Redis, pgvector), cron jobs, autoscaling and
+          one-click rollback. Built and operated solo, from the build queue to the TLS certificates.
+        </p>
+        <div class="tags">
+          <span class="tag">Next.js</span><span class="tag">TypeScript</span><span class="tag">Postgres</span>
+          <span class="tag">Docker</span><span class="tag">MCP</span><span class="tag">Linux / DevOps</span>
+        </div>
+      </article>
+
+      <article class="proj rv">
+        <div class="role">Founder · 21+ apps</div>
+        <h3><a href="https://devcloudsoftware.com/" target="_blank" rel="noopener">DevCloud Software</a> <span class="host">devcloudsoftware.com</span></h3>
+        <p>
+          A network of Shopify apps for reporting, tagging, automation, upsells, SEO and support — used by
+          10,000+ merchants, including brands like ANINE BING. Django and Python behind the scenes, with
+          worker fleets chewing through webhooks around the clock.
+        </p>
+        <div class="tags">
+          <span class="tag">Django</span><span class="tag">Shopify API</span><span class="tag">Redis / RQ</span>
+          <span class="tag">MySQL</span><span class="tag">LLM features</span>
+        </div>
+      </article>
+
+      <article class="proj rv">
+        <div class="role">Solo build</div>
+        <h3><a href="https://decknote.app/" target="_blank" rel="noopener">Decknote</a> <span class="host">decknote.app</span></h3>
+        <p>
+          Kanban boards where every card opens like a Notion page. Multi-user SaaS with real-time
+          collaboration, an API, and the same experience from desktop to phone.
+        </p>
+        <div class="tags">
+          <span class="tag">Next.js</span><span class="tag">Prisma</span><span class="tag">Postgres</span><span class="tag">Realtime</span>
+        </div>
+      </article>
+
+      <article class="proj rv">
+        <div class="role">Solo build</div>
+        <h3><a href="https://bookclock.app/" target="_blank" rel="noopener">BookClock</a> <span class="host">bookclock.app</span></h3>
+        <p>
+          Booking for service providers: publish your hours once and clients take the slot that suits them,
+          with payments at checkout, business emails, calendar sync and a reschedule link — so nobody has to
+          trade messages to find a time. Also shipping as a Shopify app.
+        </p>
+        <div class="tags">
+          <span class="tag">Next.js</span><span class="tag">Payments</span><span class="tag">Calendar / ICS</span><span class="tag">Shopify</span>
+        </div>
+      </article>
+
+      <article class="proj rv">
+        <div class="role">Open science tooling</div>
+        <h3><a href="https://hops.deploycloud.app/" target="_blank" rel="noopener">HOPS Web</a> <span class="host">hops.deploycloud.app</span></h3>
+        <p>
+          The astronomy toolkit <a href="https://github.com/ExoWorldsSpies/hops" target="_blank" rel="noopener">HOPS</a>
+          turned into a web app: plan exoplanet observations and fit transit light curves in the browser,
+          no local install, with the original scientific engine doing the maths.
+        </p>
+        <div class="tags">
+          <span class="tag">Python</span><span class="tag">Astrophysics</span><span class="tag">Docker</span>
+        </div>
+      </article>
+
+      <article class="proj feature rv">
+        <div class="role">Weekend project, zero backend</div>
+        <h3><a href="https://jmg.github.io/viajes/" target="_blank" rel="noopener">Viajes</a> <span class="host">jmg.github.io/viajes</span></h3>
+        <p>
+          Pick a month and the climate you like, and it finds the destination: 620 places scored by
+          temperature, rain, beach or mountain, budget and flight hours — then it builds the trip, splits
+          group expenses in several currencies and works out tides and moon phases. All in the browser, no
+          accounts, no server, no tracking.
+        </p>
+        <div class="tags">
+          <span class="tag">TypeScript</span><span class="tag">Offline-first</span><span class="tag">GitHub Pages</span>
+        </div>
+      </article>
+    </div>
+  </div></section>
+
+  <!-- ===================== OPEN SOURCE ===================== -->
+  <section id="open-source"><div class="wrap">
+    <div class="s-head rv">
+      <p class="eyebrow">Open source</p>
+      <h2>On GitHub since 2010</h2>
+      <p>Libraries I published because I needed them first. Star counts as of September 2026.</p>
+    </div>
+
+    <div class="repos">
+      <a class="repo rv" href="https://github.com/jmg/crawley" target="_blank" rel="noopener">
+        <span class="star">192 ★</span>
+        <span><b>crawley</b><p>Pythonic crawling &amp; scraping framework built on non-blocking I/O. 34 forks, and still the project people write to me about.</p><span class="lang">Python</span></span>
+      </a>
+      <a class="repo rv" href="https://github.com/jmg/pyfb" target="_blank" rel="noopener">
+        <span class="star">71 ★</span>
+        <span><b>pyfb</b><p>A Python interface for the Facebook Graph API, from back when the Graph API was new.</p><span class="lang">Python</span></span>
+      </a>
+      <a class="repo rv" href="https://github.com/jmg/data-layer-generator" target="_blank" rel="noopener">
+        <span class="star">54 ★</span>
+        <span><b>data-layer-generator</b><p>Generates the data layer for Python domain objects, so the persistence code stops being handwritten.</p><span class="lang">Python</span></span>
+      </a>
+      <a class="repo rv" href="https://github.com/jmg/node-simple-chat" target="_blank" rel="noopener">
+        <span class="star">26 ★</span>
+        <span><b>node-simple-chat</b><p>Real-time chat on Node.js and Socket.io — a reference people forked 17 times to learn websockets.</p><span class="lang">JavaScript</span></span>
+      </a>
+    </div>
+    <p class="os-foot rv">Plus 66 more: a pure-Python Scrabble engine, a Qt web browser, a NSIS installer generator, a music player, Django routing and deployment plugins… → <a href="https://github.com/jmg" target="_blank" rel="noopener">github.com/jmg</a></p>
+  </div></section>
+
+  <!-- ===================== STACK ===================== -->
+  <section id="stack"><div class="wrap">
+    <div class="s-head rv">
+      <p class="eyebrow">Stack</p>
+      <h2>What I reach for</h2>
+    </div>
+    <div class="stack">
+      <div class="pile rv">
+        <h3>Languages</h3>
+        <div class="tags">
+          <span class="tag">Python</span><span class="tag">TypeScript</span><span class="tag">JavaScript</span>
+          <span class="tag">PHP</span><span class="tag">Ruby</span><span class="tag">SQL</span>
+          <span class="tag">Go</span><span class="tag">C#</span>
+        </div>
+      </div>
+      <div class="pile rv">
+        <h3>Back end</h3>
+        <div class="tags">
+          <span class="tag">Django</span><span class="tag">Flask</span><span class="tag">Next.js</span>
+          <span class="tag">Node</span><span class="tag">Rails</span><span class="tag">Celery / RQ</span>
+          <span class="tag">Postgres</span><span class="tag">MySQL</span><span class="tag">Redis</span>
+        </div>
+      </div>
+      <div class="pile rv">
+        <h3>Infrastructure</h3>
+        <div class="tags">
+          <span class="tag">Docker</span><span class="tag">Linux</span><span class="tag">NGINX</span>
+          <span class="tag">CI/CD</span><span class="tag">Zero-downtime deploys</span>
+          <span class="tag">Monitoring</span><span class="tag">S3 / backups</span>
+        </div>
+      </div>
+      <div class="pile rv">
+        <h3>AI &amp; data</h3>
+        <div class="tags">
+          <span class="tag">Claude &amp; OpenAI APIs</span><span class="tag">MCP servers</span>
+          <span class="tag">Agent tooling</span><span class="tag">pgvector</span>
+          <span class="tag">Web scraping</span><span class="tag">Playwright</span>
+        </div>
+      </div>
+    </div>
+  </div></section>
+
+  <!-- ===================== PATH ===================== -->
+  <section id="path"><div class="wrap">
+    <div class="s-head rv">
+      <p class="eyebrow">Path</p>
+      <h2>Seventeen years, short version</h2>
+    </div>
+    <ol class="tl">
+      <li class="now rv">
+        <div class="when">2015 — now</div>
+        <p class="what">Founder &amp; principal engineer <span>· DevCloud Software</span></p>
+        <p>Building and running the Shopify app network and DeployCloud: product, code, infrastructure and support.</p>
+      </li>
+      <li class="rv">
+        <div class="when">2015 — now</div>
+        <p class="what">Verified Expert in Engineering <span>· Toptal</span></p>
+        <p>Member since March 2015, in the network's top 3% of talent.</p>
+      </li>
+      <li class="rv">
+        <div class="when">2011 — 2015</div>
+        <p class="what">Python web developer <span>· Deviget</span></p>
+      </li>
+      <li class="rv">
+        <div class="when">2010 — 2015</div>
+        <p class="what">Freelance web developer <span>· Python, Ruby, PHP</span></p>
+      </li>
+      <li class="rv">
+        <div class="when">2008 — 2011</div>
+        <p class="what">Web &amp; C# developer <span>· MSA, Ingematica, TNS Gallup</span></p>
+      </li>
+      <li class="rv">
+        <div class="when">2008 — 2015</div>
+        <p class="what">Systems Engineering <span>· UTN, Buenos Aires</span></p>
+      </li>
+    </ol>
+  </div></section>
+
+  <!-- ===================== CONTACT ===================== -->
+  <section id="contact"><div class="wrap">
+    <div class="contact rv">
+      <div>
+        <p class="eyebrow">Let's talk</p>
+        <h2>Got something hard to build — or something broken to rescue?</h2>
+        <p>
+          I take on back-end, full-stack and DevOps work, Shopify apps, scraping at scale and AI features
+          that have to survive real traffic. Fastest way in: my Toptal profile.
+        </p>
+      </div>
+      <div><a class="btn" href="https://www.toptal.com/developers/resume/juan-manuel-garcia#qPlopq" target="_blank" rel="noopener">Hire me on Toptal →</a></div>
+    </div>
+  </div></section>
+</main>
+
+<footer><div class="wrap">
+  <span>© <span id="yr">2026</span> Juan Manuel García · Buenos Aires</span>
+  <span class="links">
+    <a href="https://github.com/jmg" target="_blank" rel="noopener">GitHub</a>
+    <a href="https://devcloudsoftware.com/" target="_blank" rel="noopener">DevCloud</a>
+    <a href="https://www.toptal.com/developers/resume/juan-manuel-garcia#qPlopq" target="_blank" rel="noopener">Toptal</a>
+    <a href="#top">Top ↑</a>
+  </span>
+</div></footer>
+
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"Person",
+  "name":"Juan Manuel García",
+  "jobTitle":"Python & full-stack engineer",
+  "url":"https://jmg.github.io/",
+  "image":"https://jmg.github.io/assets/jmg.jpg",
+  "address":{"@type":"PostalAddress","addressLocality":"Buenos Aires","addressCountry":"AR"},
+  "worksFor":{"@type":"Organization","name":"DevCloud Software","url":"https://devcloudsoftware.com/"},
+  "alumniOf":{"@type":"CollegeOrUniversity","name":"Universidad Tecnológica Nacional"},
+  "knowsAbout":["Python","Django","TypeScript","Next.js","DevOps","Docker","Shopify apps","Web scraping","LLM integrations"],
+  "sameAs":["https://github.com/jmg","https://www.toptal.com/developers/resume/juan-manuel-garcia"]
+}
+</script>
+
+<script>
+  document.getElementById('yr').textContent = new Date().getFullYear();
+
+  // La línea del nav aparece recién cuando la página se movió.
+  const hdr = document.querySelector('header');
+  const onScroll = () => hdr.classList.toggle('stuck', window.scrollY > 8);
+  addEventListener('scroll', onScroll, {passive:true}); onScroll();
+
+  // Reveal: una sola pasada, y si el navegador no lo soporta todo queda visible.
+  const items = document.querySelectorAll('.rv');
+  if (!('IntersectionObserver' in window) || matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    items.forEach(el => el.classList.add('in'));
+  } else {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e, i) => {
+        if (!e.isIntersecting) return;
+        e.target.style.transitionDelay = Math.min(i * 60, 240) + 'ms';
+        e.target.classList.add('in');
+        io.unobserve(e.target);
+      });
+    }, {rootMargin:'0px 0px -8% 0px', threshold:0.08});
+    items.forEach(el => io.observe(el));
+  }
+</script>
 </body>
 </html>
