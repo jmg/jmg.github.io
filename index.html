@@ -166,6 +166,15 @@
   .go{position:absolute;top:22px;right:22px;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--line);color:var(--muted);opacity:0;transform:translate(-4px,4px);transition:opacity .2s,transform .2s,color .2s,border-color .2s}
   .go svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2}
   .proj:hover .go{opacity:1;transform:none}
+  /* Toda la tarjeta lleva al producto: el <a> del título se estira por encima
+     de ella. Lo que ya era un link dentro del texto (el repo de HOPS, los chips
+     del catálogo, la flecha) se levanta por encima de esa capa y sigue yendo a
+     donde iba. */
+  .proj h3 a::after{content:"";position:absolute;inset:0;border-radius:inherit}
+  .proj:hover{cursor:pointer}
+  .proj p a,
+  .proj .chips a,
+  .proj .go{position:relative;z-index:1}
   .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
   .chips .chip{
     font-size:13px;color:var(--muted);border:1px solid var(--line);border-radius:999px;
@@ -207,6 +216,10 @@
   .tl .when{font:600 12px/1 var(--mono);color:var(--dim);letter-spacing:.06em}
   .tl .what{font-size:16.5px;font-weight:600;margin:7px 0 0}
   .tl .what span{font-weight:400;color:var(--muted)}
+  /* El nombre de cada lugar lleva a su sitio. Subrayado solo al pasar: en una
+     lista de siete líneas, siete links azules serían la lista. */
+  .tl .what span a{color:inherit;text-decoration:none}
+  .tl .what span a:hover{color:var(--text);text-decoration:underline;text-underline-offset:3px}
   .tl p{margin:5px 0 0;color:var(--muted);font-size:14.5px}
 
   /* ============ contact + footer ============ */
@@ -486,7 +499,7 @@
         <div class="top">
           <div class="logo">+</div>
           <div>
-            <h3>The rest of the catalogue <span class="host">apps.shopify.com/partners/dev-cloud</span></h3>
+            <h3><a href="https://apps.shopify.com/partners/dev-cloud" target="_blank" rel="noopener">The rest of the catalogue</a> <span class="host">apps.shopify.com/partners/dev-cloud</span></h3>
             <div class="role">Same stack, same on-call</div>
           </div>
         </div>
@@ -736,17 +749,17 @@
     <ol class="tl">
       <li class="now rv">
         <div class="when">2015 — now</div>
-        <p class="what">Founder &amp; principal engineer <span>· DevCloud Software</span></p>
+        <p class="what">Founder &amp; principal engineer <span>· <a href="https://devcloudsoftware.com/" target="_blank" rel="noopener">DevCloud Software</a></span></p>
         <p>Building and running the Shopify app network and DeployCloud: product, code, infrastructure and support.</p>
       </li>
       <li class="rv">
         <div class="when">2015 — now</div>
-        <p class="what">Verified Expert in Engineering <span>· Toptal</span></p>
+        <p class="what">Verified Expert in Engineering <span>· <a href="https://www.toptal.com/developers/resume/juan-manuel-garcia#qPlopq" target="_blank" rel="noopener">Toptal</a></span></p>
         <p>Member since March 2015, in the network's top 3% of talent.</p>
       </li>
       <li class="rv">
         <div class="when">2015 — 2020</div>
-        <p class="what">Python developer <span>· ShipHero</span></p>
+        <p class="what">Python developer <span>· <a href="https://shiphero.com/" target="_blank" rel="noopener">ShipHero</a></span></p>
         <p>
           Five years on a warehouse management and fulfilment platform: Python services and the Shopify
           integration — orders, inventory and fulfilments over Shopify's APIs and webhooks — running on AWS
@@ -755,7 +768,7 @@
       </li>
       <li class="rv">
         <div class="when">2011 — 2015</div>
-        <p class="what">Python web developer <span>· Deviget</span></p>
+        <p class="what">Python web developer <span>· <a href="https://deviget.com/" target="_blank" rel="noopener">Deviget</a></span></p>
       </li>
       <li class="rv">
         <div class="when">2010 — 2015</div>
@@ -767,7 +780,7 @@
       </li>
       <li class="rv">
         <div class="when">2008 — 2015</div>
-        <p class="what">Systems Engineering <span>· UTN, Buenos Aires</span></p>
+        <p class="what">Systems Engineering <span>· <a href="https://www.frba.utn.edu.ar/" target="_blank" rel="noopener">UTN, Buenos Aires</a></span></p>
       </li>
     </ol>
   </div></section>
