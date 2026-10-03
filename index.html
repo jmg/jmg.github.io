@@ -173,8 +173,10 @@
   .proj h3 a::after{content:"";position:absolute;inset:0;border-radius:inherit}
   .proj:hover{cursor:pointer}
   .proj p a,
-  .proj .chips a,
-  .proj .go{position:relative;z-index:1}
+  .proj .chips a{position:relative;z-index:1}
+  /* La flecha ya es absolute: solo necesita el z-index. Con relative entraba
+     al flujo y dejaba un hueco invisible de 34 px arriba de cada tarjeta. */
+  .proj .go{z-index:1}
   .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
   .chips .chip{
     font-size:13px;color:var(--muted);border:1px solid var(--line);border-radius:999px;
