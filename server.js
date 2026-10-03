@@ -20,6 +20,7 @@ const TYPES = {
   '.json': 'application/json; charset=utf-8',
   '.txt': 'text/plain; charset=utf-8',
   '.xml': 'application/xml; charset=utf-8',
+  '.pdf': 'application/pdf',
   '.webmanifest': 'application/manifest+json',
   '.webp': 'image/webp',
   '.png': 'image/png',
